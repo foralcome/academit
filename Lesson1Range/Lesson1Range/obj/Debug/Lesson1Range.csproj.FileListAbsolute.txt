@@ -1,7 +1,0 @@
-C:\WORK\C#\GitHub\academit\Lesson1Range\Lesson1Range\bin\Debug\Lesson1Range.exe.config
-C:\WORK\C#\GitHub\academit\Lesson1Range\Lesson1Range\bin\Debug\Lesson1Range.exe
-C:\WORK\C#\GitHub\academit\Lesson1Range\Lesson1Range\bin\Debug\Lesson1Range.pdb
-C:\WORK\C#\GitHub\academit\Lesson1Range\Lesson1Range\obj\Debug\Lesson1Range.csprojResolveAssemblyReference.cache
-C:\WORK\C#\GitHub\academit\Lesson1Range\Lesson1Range\obj\Debug\Lesson1Range.csproj.CoreCompileInputs.cache
-C:\WORK\C#\GitHub\academit\Lesson1Range\Lesson1Range\obj\Debug\Lesson1Range.exe
-C:\WORK\C#\GitHub\academit\Lesson1Range\Lesson1Range\obj\Debug\Lesson1Range.pdb

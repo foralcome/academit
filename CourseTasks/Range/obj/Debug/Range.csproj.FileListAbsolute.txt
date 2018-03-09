@@ -1,0 +1,7 @@
+C:\WORK\C#\GitHub\academit\CourseTasks\Range\obj\Debug\Range.csprojResolveAssemblyReference.cache
+C:\WORK\C#\GitHub\academit\CourseTasks\Range\obj\Debug\Range.csproj.CoreCompileInputs.cache
+C:\WORK\C#\GitHub\academit\CourseTasks\Range\bin\Debug\Range.exe.config
+C:\WORK\C#\GitHub\academit\CourseTasks\Range\bin\Debug\Range.exe
+C:\WORK\C#\GitHub\academit\CourseTasks\Range\bin\Debug\Range.pdb
+C:\WORK\C#\GitHub\academit\CourseTasks\Range\obj\Debug\Range.exe
+C:\WORK\C#\GitHub\academit\CourseTasks\Range\obj\Debug\Range.pdb
