@@ -22,7 +22,7 @@ namespace Academits.Barsukov
                 Console.WriteLine("Введите конечное значение диапазона:");
                 double range1Stop = Convert.ToDouble(Console.ReadLine());
                 Range r1 = new Range(range1Start, range1Stop);
-                r1.PrintRange();
+                r1.Print();
                 Console.WriteLine();
 
                 Console.WriteLine("Второй диапазон:");
@@ -31,38 +31,38 @@ namespace Academits.Barsukov
                 Console.WriteLine("Введите конечное значение диапазона:");
                 double range2Stop = Convert.ToDouble(Console.ReadLine());
                 Range r2 = new Range(range2Start, range2Stop);
-                r2.PrintRange();
+                r2.Print();
                 Console.WriteLine();
 
                 Console.WriteLine("1) Поиск пересечения диапазонов:");
-                Range o12 = Range.GetOverlap(r1, r2);
+                Range o12 = r1.GetOverlap(r2);
                 if (o12 == null)
                 {
                     Console.WriteLine("Персесечения нет!");
                 }
                 else
                 {
-                    o12.PrintRange();
+                    o12.Print();
                 }
                 Console.WriteLine();
 
                 Console.WriteLine("2) Объединение двух интервалов в один:");
-                Range[] m12 = Range.GetMarge(r1, r2);
+                Range[] m12 = r1.GetMarge(r2);
                 Console.WriteLine("Объединённый интервал состоит из {0} части(ей):", m12.Length);
                 for (int i = 1; i <= m12.Length; i++)
                 {
                     Console.WriteLine("Часть {0}:", i);
-                    m12[i - 1].PrintRange();
-                    Console.WriteLine();
+                    m12[i - 1].Print();
                 }
+                Console.WriteLine();
 
                 Console.WriteLine("3) Разница двух интервалов:");
-                Range[] d12 = Range.GetDifference(r1, r2);
-                Console.WriteLine("Разница интервалов состоит из {0} части(ей):", d12.Length);
+                Range[] d12 = r1.GetDifference(r2);
+                Console.WriteLine("Найдено из {0} части(ей):", d12.Length);
                 for (int i = 1; i <= d12.Length; i++)
                 {
                     Console.WriteLine("Часть {0}:", i);
-                    d12[i - 1].PrintRange();
+                    d12[i - 1].Print();
                     Console.WriteLine();
                 }
 
