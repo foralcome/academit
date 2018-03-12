@@ -35,7 +35,7 @@ namespace Academits.Barsukov
                 Console.WriteLine();
 
                 Console.WriteLine("1) Поиск пересечения диапазонов:");
-                Range o12 = r1.GetOverlap(r2);
+                Range o12 = r1.GetIntersection(r2);
                 if (o12 == null)
                 {
                     Console.WriteLine("Персесечения нет!");
@@ -47,7 +47,7 @@ namespace Academits.Barsukov
                 Console.WriteLine();
 
                 Console.WriteLine("2) Объединение двух интервалов в один:");
-                Range[] m12 = r1.GetMarge(r2);
+                Range[] m12 = r1.GetUnion(r2);
                 Console.WriteLine("Объединённый интервал состоит из {0} части(ей):", m12.Length);
                 for (int i = 1; i <= m12.Length; i++)
                 {

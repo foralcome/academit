@@ -8,27 +8,48 @@ namespace Academits.Barsukov
 {
     class Range
     {
-        private double From
+        private double from;
+        public double From
         {
-            get;
-            set;
+            get
+            {
+                return from;
+            }
+            set
+            {
+                from = value;
+                length = from - to;
+            }
         }
 
-        private double To
+        private double to;
+        public double To
         {
-            get;
-            set;
+            get
+            {
+                return to;
+            }
+            set
+            {
+                to = value;
+                length = from - to;
+            }
         }
-        private double Length
+
+        private double length;
+        public double Length
         {
-            get;
+            get
+            {
+                return length;
+            }
         }
 
         public Range(double from, double to)
         {
-            this.From = from;
-            this.To = to;
-            this.Length = from - to;
+            this.from = from;
+            this.to = to;
+            this.length = from - to;
         }
 
         public bool IsInside(double value)
@@ -42,10 +63,10 @@ namespace Academits.Barsukov
         }
 
         //Получение пересечения двух интервалов (r1-this)
-        public Range GetOverlap(Range range)
+        public Range GetIntersection(Range range)
         {
             //отсутствие пересечения
-            if ((this.From <= range.From && this.To < range.From) || (range.From <= this.From && range.To < this.From))
+            if ((this.To < range.From) || (this.From > range.To))
             {
                 return null;
             }
@@ -75,44 +96,38 @@ namespace Academits.Barsukov
         }
 
         //Получение объединения двух интервалов. Может получиться 1 или 2 отдельных куска
-        public Range[] GetMarge(Range range)
+        public Range[] GetUnion(Range range)
         {
-            Range[] arrayRange;
-
             //отсутствие пересечения
-            if ((this.From <= range.From && this.To < range.From) || (range.From <= this.From && range.To < this.From))
+            if ((this.To < range.From) || (this.From > range.To))
             {
-                arrayRange = new Range[2];
                 if (this.From > range.From)
                 {
-                    arrayRange[0] = new Range(range.From, range.To);
-                    arrayRange[1] = new Range(this.From, this.To);
+                    Range[] arrayRange2 = { new Range(range.From, range.To), new Range(this.From, this.To) };
+                    return arrayRange2;
                 }
                 else
                 {
-                    arrayRange[0] = new Range(this.From, this.To);
-                    arrayRange[1] = new Range(range.From, range.To);
+                    Range[] arrayRange2 = { new Range(this.From, this.To), new Range(range.From, range.To) };
+                    return arrayRange2;
                 }
             }
             //есть пересечение
             else
             {
-                arrayRange = new Range[1];
-                arrayRange[0] = new Range(Math.Min(this.From, range.From), Math.Max(this.To, range.To));
+                Range[] arrayRange1 = { new Range(Math.Min(this.From, range.From), Math.Max(this.To, range.To)) };
+                return arrayRange1;
             }
-            return arrayRange;
         }
 
         //Разность(отличие): то, что входит в this и не входит в R2
         public Range[] GetDifference(Range range)
         {
-            Range[] arrayRange;
-
             //отсутствие пересечения
-            if ((this.From <= range.From && this.To < range.From) || (range.From <= this.From && range.To < this.From))
+            if ((this.To < range.From) || (this.From > range.To))
             {
-                arrayRange = new Range[1];
-                arrayRange[0] = new Range(this.From, this.To);
+                Range[] arrayRange1 = { new Range(this.From, this.To) };
+                return arrayRange1;
             }
             //есть пересечение
             else
@@ -120,31 +135,28 @@ namespace Academits.Barsukov
                 //первое полностью входит во второе
                 if (this.From >= range.From && this.To <= range.To)
                 {
-                    return (new Range[0]);
+                    Range[] arrayRange1 = { };
+                    return arrayRange1;
                 }
                 //второе полностью входит в первое
                 else if (range.From >= this.From && range.To <= this.To)
                 {
-                    arrayRange = new Range[2];
-
-                    arrayRange[0] = new Range(this.From, range.From);
-                    arrayRange[1] = new Range(range.To, this.To);
+                    Range[] arrayRange2 = { new Range(this.From, range.From), new Range(range.To, this.To) };
+                    return arrayRange2;
                 }
                 //пересечение первого справа
                 else if (range.From >= this.From)
                 {
-                    arrayRange = new Range[1];
-                    arrayRange[0] = new Range(this.From, range.From);
+                    Range[] arrayRange1 = { new Range(this.From, range.From) };
+                    return arrayRange1;
                 }
                 //пересечение первого слева
                 else
                 {
-                    arrayRange = new Range[1];
-                    arrayRange[0] = new Range(range.To, this.To);
+                    Range[] arrayRange1 = { new Range(range.To, this.To) };
+                    return arrayRange1;
                 }
             }
-
-            return arrayRange;
         }
     }
 }
