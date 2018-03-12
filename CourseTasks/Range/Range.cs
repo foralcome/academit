@@ -8,48 +8,30 @@ namespace Academits.Barsukov
 {
     class Range
     {
-        private double from;
         public double From
         {
-            get
-            {
-                return from;
-            }
-            set
-            {
-                from = value;
-                length = from - to;
-            }
+            get;
+            set;
         }
 
-        private double to;
         public double To
         {
-            get
-            {
-                return to;
-            }
-            set
-            {
-                to = value;
-                length = from - to;
-            }
+            get;
+            set;
         }
 
-        private double length;
         public double Length
         {
             get
             {
-                return length;
+                return From - To;
             }
         }
 
         public Range(double from, double to)
         {
-            this.from = from;
-            this.to = to;
-            this.length = from - to;
+            this.From = from;
+            this.To = to;
         }
 
         public bool IsInside(double value)
@@ -103,20 +85,17 @@ namespace Academits.Barsukov
             {
                 if (this.From > range.From)
                 {
-                    Range[] arrayRange2 = { new Range(range.From, range.To), new Range(this.From, this.To) };
-                    return arrayRange2;
+                    return new Range[] { new Range(range.From, range.To), new Range(this.From, this.To) };
                 }
                 else
                 {
-                    Range[] arrayRange2 = { new Range(this.From, this.To), new Range(range.From, range.To) };
-                    return arrayRange2;
+                    return new Range[] { new Range(this.From, this.To), new Range(range.From, range.To) };
                 }
             }
             //есть пересечение
             else
             {
-                Range[] arrayRange1 = { new Range(Math.Min(this.From, range.From), Math.Max(this.To, range.To)) };
-                return arrayRange1;
+                return new Range[] { new Range(Math.Min(this.From, range.From), Math.Max(this.To, range.To)) };
             }
         }
 
@@ -126,8 +105,7 @@ namespace Academits.Barsukov
             //отсутствие пересечения
             if ((this.To < range.From) || (this.From > range.To))
             {
-                Range[] arrayRange1 = { new Range(this.From, this.To) };
-                return arrayRange1;
+                return new Range[] { new Range(this.From, this.To) };
             }
             //есть пересечение
             else
@@ -135,26 +113,23 @@ namespace Academits.Barsukov
                 //первое полностью входит во второе
                 if (this.From >= range.From && this.To <= range.To)
                 {
-                    Range[] arrayRange1 = { };
-                    return arrayRange1;
+                    return new Range[] { };
                 }
                 //второе полностью входит в первое
                 else if (range.From >= this.From && range.To <= this.To)
                 {
-                    Range[] arrayRange2 = { new Range(this.From, range.From), new Range(range.To, this.To) };
-                    return arrayRange2;
+                    return new Range[] { new Range(this.From, range.From), new Range(range.To, this.To) };
+
                 }
                 //пересечение первого справа
                 else if (range.From >= this.From)
                 {
-                    Range[] arrayRange1 = { new Range(this.From, range.From) };
-                    return arrayRange1;
+                    return new Range[] { new Range(this.From, range.From) };
                 }
                 //пересечение первого слева
                 else
                 {
-                    Range[] arrayRange1 = { new Range(range.To, this.To) };
-                    return arrayRange1;
+                    return new Range[] { new Range(range.To, this.To) };
                 }
             }
         }
