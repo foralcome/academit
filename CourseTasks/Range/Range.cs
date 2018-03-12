@@ -24,7 +24,7 @@ namespace Academits.Barsukov
         {
             get
             {
-                return From - To;
+                return To - From;
             }
         }
 
@@ -48,7 +48,7 @@ namespace Academits.Barsukov
         public Range GetIntersection(Range range)
         {
             //отсутствие пересечения
-            if ((this.To < range.From) || (this.From > range.To))
+            if ((this.To <= range.From) || (this.From >= range.To))
             {
                 return null;
             }
@@ -81,7 +81,7 @@ namespace Academits.Barsukov
         public Range[] GetUnion(Range range)
         {
             //отсутствие пересечения
-            if ((this.To < range.From) || (this.From > range.To))
+            if ((this.To <= range.From) || (this.From >= range.To))
             {
                 if (this.From > range.From)
                 {
@@ -103,7 +103,7 @@ namespace Academits.Barsukov
         public Range[] GetDifference(Range range)
         {
             //отсутствие пересечения
-            if ((this.To < range.From) || (this.From > range.To))
+            if ((this.To <= range.From) || (this.From >= range.To))
             {
                 return new Range[] { new Range(this.From, this.To) };
             }
@@ -118,8 +118,18 @@ namespace Academits.Barsukov
                 //второе полностью входит в первое
                 else if (range.From >= this.From && range.To <= this.To)
                 {
-                    return new Range[] { new Range(this.From, range.From), new Range(range.To, this.To) };
-
+                    if (this.From == range.From)
+                    {
+                        return new Range[] { new Range(range.To, this.To) };
+                    }
+                    else if (this.To == range.To)
+                    {
+                        return new Range[] { new Range(this.From, range.From) };
+                    }
+                    else
+                    {
+                        return new Range[] { new Range(this.From, range.From), new Range(range.To, this.To) };
+                    }
                 }
                 //пересечение первого справа
                 else if (range.From >= this.From)
