@@ -6,75 +6,54 @@ using System.Threading.Tasks;
 
 namespace Academits.Barsukov
 {
-    class ShapesMain
+    class ShapeMain
     {
-        public static Shapes GetShapeWithMaxArea(Array shapes)
-        {
-            Shapes shapeMaxArea = null;
-
-            foreach (Shapes s in shapes)
-            {
-                if (shapeMaxArea == null)
-                {
-                    shapeMaxArea = s;
-                    continue;
-                }
-
-                if (shapeMaxArea.CompareTo(s) < 0)
-                {
-                    shapeMaxArea = s;
-                }
-            }
-
-            return shapeMaxArea;
-        }
-
         static void Main(string[] args)
         {
-            List<Shapes> shapes = new List<Shapes>();
-            shapes.Add(new Square(10));
-            shapes.Add(new Triangle(0, 0, 10, 10, 10, 0));
-            shapes.Add(new Rectangle(10, 6));
-            shapes.Add(new Circle(12));
-            shapes.Add(new Square(5));
-            shapes.Add(new Triangle(3, 3, 0, 0, 3, 0));
-            shapes.Add(new Rectangle(7, 8));
-            shapes.Add(new Circle(6));
-            shapes.Add(new Square(6));
-            shapes.Add(new Triangle(0, 5, 5, 5, 5, 0));
-            shapes.Add(new Rectangle(10, 2));
-            shapes.Add(new Circle(14));
-            shapes.Add(new Square(7));
-            shapes.Add(new Triangle(6, 6, 0, 0, 6, 0));
-            shapes.Add(new Rectangle(3, 15));
-            shapes.Add(new Circle(5));
+            List<IShape> ListShapes = new List<IShape>();
+            ListShapes.Add(new Square(10));
+            ListShapes.Add(new Triangle(0, 0, 10, 10, 10, 0));
+            ListShapes.Add(new Rectangle(10, 6));
+            ListShapes.Add(new Circle(12));
+            ListShapes.Add(new Square(5));
+            ListShapes.Add(new Triangle(3, 3, 0, 0, 3, 0));
+            ListShapes.Add(new Rectangle(7, 8));
+            ListShapes.Add(new Circle(6));
+            ListShapes.Add(new Square(6));
+            ListShapes.Add(new Triangle(0, 5, 5, 5, 5, 0));
+            ListShapes.Add(new Rectangle(10, 2));
+            ListShapes.Add(new Circle(14));
+            ListShapes.Add(new Square(7));
+            ListShapes.Add(new Triangle(6, 6, 0, 0, 6, 0));
+            ListShapes.Add(new Rectangle(3, 15));
+            ListShapes.Add(new Circle(5));
 
             Console.WriteLine("Исходный список фигур:");
-            foreach (Shapes shape in shapes)
+            foreach (IShape shape in ListShapes)
             {
                 Console.WriteLine(shape.ToString());
             }
             Console.WriteLine();
 
             Console.WriteLine("Отсортированный список фигур:");
-            Array shapesSort = shapes.ToArray();
-            Array.Sort(shapesSort);
-            foreach (Shapes shape in shapesSort)
+            IShape[] ArrayShapes = ListShapes.ToArray();
+            Array.Sort(ArrayShapes, new ShapeCompare());
+            foreach (IShape shape in ArrayShapes)
             {
                 Console.WriteLine(shape.ToString());
             }
             Console.WriteLine();
 
-            Shapes s1 = null;
-            if (shapesSort.Length >= 1)
+            IShape s1 = null;
+            if (ArrayShapes.Length >= 1)
             {
-                s1 = (Shapes)shapesSort.GetValue(shapesSort.Length - 1);
+                s1 = (IShape)ArrayShapes.GetValue(ArrayShapes.Length - 1);
                 Console.WriteLine("Фигура на 1 месте по размеру площади: {0}", s1.ToString());
             }
-            Shapes s2 = null;
-            if (shapesSort.Length >= 2)
+            IShape s2 = null;
+            if (ArrayShapes.Length >= 2)
             {
-                s2 = (Shapes)shapesSort.GetValue(shapesSort.Length - 2);
+                s2 = (IShape)ArrayShapes.GetValue(ArrayShapes.Length - 2);
                 Console.WriteLine("Фигура на 2 месте по размеру площади: {0}", s2.ToString());
             }
             Console.WriteLine();
