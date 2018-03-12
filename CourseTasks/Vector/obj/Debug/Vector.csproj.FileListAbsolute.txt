@@ -1,0 +1,7 @@
+C:\WORK\C#\GitHub\academit\CourseTasks\Vector\bin\Debug\Vector.exe.config
+C:\WORK\C#\GitHub\academit\CourseTasks\Vector\bin\Debug\Vector.exe
+C:\WORK\C#\GitHub\academit\CourseTasks\Vector\bin\Debug\Vector.pdb
+C:\WORK\C#\GitHub\academit\CourseTasks\Vector\obj\Debug\Vector.csprojResolveAssemblyReference.cache
+C:\WORK\C#\GitHub\academit\CourseTasks\Vector\obj\Debug\Vector.csproj.CoreCompileInputs.cache
+C:\WORK\C#\GitHub\academit\CourseTasks\Vector\obj\Debug\Vector.exe
+C:\WORK\C#\GitHub\academit\CourseTasks\Vector\obj\Debug\Vector.pdb
