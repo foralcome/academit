@@ -11,19 +11,16 @@ namespace Academits.Barsukov
         private string Name
         {
             get;
-            set;
         }
 
         private double Width
         {
             get;
-            set;
         }
 
         private double Height
         {
             get;
-            set;
         }
 
         private double Area

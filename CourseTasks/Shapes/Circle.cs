@@ -11,13 +11,11 @@ namespace Academits.Barsukov
         private string Name
         {
             get;
-            set;
         }
 
         private double Radius
         {
             get;
-            set;
         }
 
         private double Area
@@ -42,12 +40,12 @@ namespace Academits.Barsukov
 
         public double GetWidth()
         {
-            return 0.0;
+            return 2 * Radius;
         }
 
         public double GetHeight()
         {
-            return 0.0;
+            return 2 * Radius;
         }
 
         public double GetArea()

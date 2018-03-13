@@ -11,39 +11,32 @@ namespace Academits.Barsukov
         string Name
         {
             get;
-            set;
         }
 
         private double X1
         {
             get;
-            set;
         }
 
         private double Y1
         {
             get;
-            set;
         }
         private double X2
         {
             get;
-            set;
         }
         private double Y2
         {
             get;
-            set;
         }
         private double X3
         {
             get;
-            set;
         }
         private double Y3
         {
             get;
-            set;
         }
 
         private double Area
@@ -126,7 +119,7 @@ namespace Academits.Barsukov
             int hash = 1;
             hash = prime * hash + (Name != null ? Name.GetHashCode() : 0);
             hash = prime * hash + (int)X1;
-            hash = prime * hash + (int)X2;
+            hash = prime * hash + (int)Y1;
             hash = prime * hash + (int)X2;
             hash = prime * hash + (int)Y2;
             hash = prime * hash + (int)X3;

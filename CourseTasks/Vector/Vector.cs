@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Academits.Barsukov
 {
-    class Vector
+    public class Vector
     {
         private int Length
         {
