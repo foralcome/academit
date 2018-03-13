@@ -1,7 +1,0 @@
-C:\WORK\C#\GitHub\academit\CourseTasks\Shapes\bin\Debug\Shapes.exe.config
-C:\WORK\C#\GitHub\academit\CourseTasks\Shapes\bin\Debug\Shapes.exe
-C:\WORK\C#\GitHub\academit\CourseTasks\Shapes\bin\Debug\Shapes.pdb
-C:\WORK\C#\GitHub\academit\CourseTasks\Shapes\obj\Debug\Shapes.csprojResolveAssemblyReference.cache
-C:\WORK\C#\GitHub\academit\CourseTasks\Shapes\obj\Debug\Shapes.csproj.CoreCompileInputs.cache
-C:\WORK\C#\GitHub\academit\CourseTasks\Shapes\obj\Debug\Shapes.exe
-C:\WORK\C#\GitHub\academit\CourseTasks\Shapes\obj\Debug\Shapes.pdb

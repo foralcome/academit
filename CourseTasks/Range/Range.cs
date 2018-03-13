@@ -81,9 +81,10 @@ namespace Academits.Barsukov
         public Range[] GetUnion(Range range)
         {
             //отсутствие пересечения
-            if ((this.To <= range.From) || (this.From >= range.To))
+            if ((this.To < range.From) || (this.From > range.To))
             {
                 if (this.From > range.From)
+
                 {
                     return new Range[] { new Range(range.From, range.To), new Range(this.From, this.To) };
                 }
@@ -95,7 +96,21 @@ namespace Academits.Barsukov
             //есть пересечение
             else
             {
-                return new Range[] { new Range(Math.Min(this.From, range.From), Math.Max(this.To, range.To)) };
+                //пересечение в одной точке справа
+                if (this.To == range.From)
+                {
+                    return new Range[] { new Range(this.From, range.To) };
+                }
+                //пересечение в одной точке слева
+                else if (range.To == this.From)
+                {
+                    return new Range[] { new Range(range.From, this.To) };
+                }
+                else
+                {
+                    return new Range[] { new Range(Math.Min(this.From, range.From), Math.Max(this.To, range.To)) };
+                }
+                
             }
         }
 
