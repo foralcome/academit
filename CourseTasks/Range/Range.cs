@@ -96,21 +96,7 @@ namespace Academits.Barsukov
             //есть пересечение
             else
             {
-                //пересечение в одной точке справа
-                if (this.To == range.From)
-                {
-                    return new Range[] { new Range(this.From, range.To) };
-                }
-                //пересечение в одной точке слева
-                else if (range.To == this.From)
-                {
-                    return new Range[] { new Range(range.From, this.To) };
-                }
-                else
-                {
-                    return new Range[] { new Range(Math.Min(this.From, range.From), Math.Max(this.To, range.To)) };
-                }
-                
+                return new Range[] { new Range(Math.Min(this.From, range.From), Math.Max(this.To, range.To)) };
             }
         }
 
