@@ -20,7 +20,7 @@ namespace Academits.Barsukov
         {
             if (length <= 0)
             {
-                throw new ArgumentException("size must be > 0!");
+                throw new ArgumentException("length must be > 0!");
             }
             else
             {
@@ -211,7 +211,7 @@ namespace Academits.Barsukov
 
         public double GetValueByIndex(int index)
         {
-            if (index < 0 || index > this.Length)
+            if (index < 0 || index >= this.Length)
             {
                 throw new IndexOutOfRangeException("не корректный индекс");
             }
@@ -221,7 +221,7 @@ namespace Academits.Barsukov
 
         public void SetValueByIndex(int index, double value)
         {
-            if (index < 0 || index > this.Length)
+            if (index < 0 || index >= this.Length)
             {
                 throw new IndexOutOfRangeException("не корректный индекс");
             }
@@ -247,7 +247,7 @@ namespace Academits.Barsukov
             }
             for (int i = 0; i < this.Length; i++)
             {
-                if (this.values[i] != p.values[i])
+                if (!this.values[i].Equals(p.values[i]))
                 {
                     return false;
                 }
