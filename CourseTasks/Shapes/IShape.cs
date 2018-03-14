@@ -12,7 +12,5 @@ namespace Academits.Barsukov
         double GetHeight();
         double GetArea();
         double GetPerimeter();
-        bool Equals(Object o);
-        int GetHashCode();
     }
 }

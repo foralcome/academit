@@ -37,7 +37,7 @@ namespace Academits.Barsukov
 
             Console.WriteLine("Отсортированный список фигур:");
             IShape[] ArrayShapes = ListShapes.ToArray();
-            Array.Sort(ArrayShapes, new ShapeCompare());
+            Array.Sort(ArrayShapes, new ShapesCompareArea());
             foreach (IShape shape in ArrayShapes)
             {
                 Console.WriteLine(shape.ToString());

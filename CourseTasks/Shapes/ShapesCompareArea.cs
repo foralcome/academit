@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Academits.Barsukov
 {
-    public class ShapeCompare : IComparer<IShape>
+    public class ShapesCompareArea : IComparer<IShape>
     {
         public int Compare(IShape x, IShape y)
         {

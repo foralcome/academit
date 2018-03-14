@@ -8,11 +8,11 @@ namespace Academits.Barsukov
 {
     class Matrix
     {
-        private int SizeN
+        private int CountRows
         {
             get;
         }
-        private int SizeM
+        private int CountCols
         {
             get;
         }
@@ -26,11 +26,11 @@ namespace Academits.Barsukov
                 throw new ArgumentException("неверное значение размера матрицы");
             }
 
-            this.SizeN = n;
-            this.SizeM = m;
+            this.CountRows = n;
+            this.CountCols = m;
 
             this.vectors = new Vector[n];
-            for (int i = 0; i < SizeM; i++)
+            for (int i = 0; i < CountCols; i++)
             {
                 this.vectors[i] = new Vector(m);
             }
@@ -38,11 +38,11 @@ namespace Academits.Barsukov
 
         Matrix(Matrix matrix)
         {
-            this.SizeN = matrix.SizeM;
-            this.SizeM = matrix.SizeN;
+            this.CountRows = matrix.CountCols;
+            this.CountCols = matrix.CountRows;
 
-            this.vectors = new Vector[this.SizeN];
-            for (int i = 0; i < this.SizeN; i++)
+            this.vectors = new Vector[this.CountRows];
+            for (int i = 0; i < this.CountRows; i++)
             {
                 this.vectors[i] = new Vector(matrix.vectors[i].values);
             }
@@ -50,11 +50,11 @@ namespace Academits.Barsukov
 
         Matrix(double[][] values)
         {
-            this.SizeN = values.GetLength(0);
-            this.SizeM = values.GetLength(1);
+            this.CountRows = values.GetLength(0);
+            this.CountCols = values.GetLength(1);
 
-            this.vectors = new Vector[this.SizeN];
-            for (int i = 0; i < this.SizeN; i++)
+            this.vectors = new Vector[this.CountRows];
+            for (int i = 0; i < this.CountRows; i++)
             {
                 this.vectors[i] = new Vector(values[i]);
             }
@@ -62,32 +62,32 @@ namespace Academits.Barsukov
 
         Matrix(Vector[] vectors)
         {
-            this.SizeN = vectors.Length;
-            this.vectors = new Vector[this.SizeN];
+            this.CountRows = vectors.Length;
+            this.vectors = new Vector[this.CountRows];
 
-            this.SizeM = 0;
+            this.CountCols = 0;
             foreach (Vector v in vectors)
             {
-                if (v.GetLength() > this.SizeM)
+                if (v.GetLength() > this.CountCols)
                 {
-                    this.SizeM = v.GetLength();
+                    this.CountCols = v.GetLength();
                 }
             }
 
-            for (int i = 0; i < this.SizeN; i++)
+            for (int i = 0; i < this.CountRows; i++)
             {
-                this.vectors[i] = new Vector(this.SizeM, vectors[i].values);
+                this.vectors[i] = new Vector(this.CountCols, vectors[i].values);
             }
         }
 
         public int[] GetSize()
         {
-            return new int[] { this.SizeN, this.SizeM };
+            return new int[] { this.CountRows, this.CountCols };
         }
 
-        public Vector GetVectorByIndex(int index)
+        public Vector GetVectorRowByIndex(int index)
         {
-            if (index < 0 || index >= this.SizeN)
+            if (index < 0 || index >= this.CountRows)
             {
                 throw new IndexOutOfRangeException("передан не верный индекс!");
             }
@@ -95,14 +95,64 @@ namespace Academits.Barsukov
             return this.vectors[index];
         }
 
-        public void SetVectorByIndex(Vector v, int index)
+        public void SetVectorRowByIndex(Vector v, int index)
         {
-            if (index < 0 || index >= this.SizeN)
+            if (index < 0 || index >= this.CountRows)
             {
                 throw new IndexOutOfRangeException("передан не верный индекс!");
             }
 
             this.vectors[index] = v;
+        }
+        public Vector GetVectorColByIndex(int index)
+        {
+            if (index < 0 || index >= this.CountCols)
+            {
+                throw new IndexOutOfRangeException("передан не верный индекс!");
+            }
+
+            Vector result = new Vector(this.CountRows);
+
+            for (int i = 0; i < this.CountRows; i++)
+            {
+                result.values[i] = this.vectors[i].GetValueByIndex(index);
+            }
+
+            return result;
+        }
+
+        public Matrix Transposition()
+        {
+            int newCountRows = this.CountCols;
+            int newCountCols = this.CountRows;
+
+            Matrix newMatrix = new Matrix(newCountRows, newCountCols);
+
+            for (int i = 0; i < this.CountRows; i++)
+            {
+                for (int j = 0; j < this.CountCols; j++)
+                {
+                    newMatrix.vectors[j].values[i] = this.vectors[i].GetValueByIndex(j);
+                }
+            }
+
+            return newMatrix;
+        }
+
+        public void MultiplicationScalar(int scalar)
+        {
+            for (int i = 0; i < this.CountRows; i++)
+            {
+                this.vectors[i].MultiplicationScalar(scalar);
+            }
+        }
+
+        public void MultiplicationScalar(int scalar)
+        {
+            for (int i = 0; i < this.CountRows; i++)
+            {
+                this.vectors[i].MultiplicationScalar(scalar);
+            }
         }
     }
 }
