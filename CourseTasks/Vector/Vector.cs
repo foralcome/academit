@@ -8,7 +8,7 @@ namespace Academits.Barsukov
 {
     public class Vector
     {
-        private int Size
+        public int Size
         {
             get
             {
@@ -57,12 +57,8 @@ namespace Academits.Barsukov
             }
             else
             {
-                if (n < arrayValues.Length)
-                {
-                    n = arrayValues.Length;
-                }
                 this.values = new double[n];
-                arrayValues.CopyTo(this.values, 0);
+                Array.Copy(arrayValues, this.values, n);
             }
         }
 
@@ -92,32 +88,22 @@ namespace Academits.Barsukov
 
         public void Addition(Vector v)
         {
-            if (this.values.Length < v.values.Length)
-            {
-                Array.Resize(ref this.values, v.values.Length);
-            }
-
-            int indexLimit = (v.values.Length < this.Size) ? v.values.Length : this.Size;
+            int indexLimit = Math.Min(v.values.Length, this.Size);
             for (int i = 0; i < indexLimit; i++)
             {
-                this.values[i] = this.values[i] + v.values[i];
+                this.values[i] += v.values[i];
             }
         }
 
         public static Vector GetAddition(Vector v1, Vector v2)
         {
             Vector result = new Vector(v1);
-            v1.Addition(v2);
+            result.Addition(v2);
             return result;
         }
 
         public void Subtraction(Vector v)
         {
-            if (this.values.Length < v.values.Length)
-            {
-                Array.Resize(ref this.values, v.values.Length);
-            }
-
             int indexLimit = (v.values.Length < this.Size) ? v.values.Length : this.Size;
             for (int i = 0; i < indexLimit; i++)
             {
@@ -132,42 +118,16 @@ namespace Academits.Barsukov
             return result;
         }
 
-        public double Multiplication(Vector v)
-        {
-            if (this.values.Length < v.values.Length)
-            {
-                Array.Resize(ref this.values, v.values.Length);
-            }
-
-            double scalarSum = 0.0;
-
-            int indexLimit = (v.values.Length < this.Size) ? v.values.Length : this.Size;
-            for (int i = 0; i < indexLimit; i++)
-            {
-                scalarSum += this.values[i] * v.values[i];
-            }
-
-            return scalarSum;
-        }
-
         public static double GetMultiplication(Vector v1, Vector v2)
         {
+            int indexLimit = Math.Min(v1.values.Length, v2.values.Length);
+
             double scalarSum = 0.0;
-            scalarSum = v1.Multiplication(v2);
-            return scalarSum;
-        }
-
-        public static Vector GetMarge(Vector v1, Vector v2)
-        {
-            Vector result = new Vector(v1.Size + v2.Size);
-
-            v1.values.CopyTo(result.values, 0);
-            for (int i = v1.Size, j = 0; j < v2.Size; i++, j++)
+            for (int i = 0; i < indexLimit; i++)
             {
-                result.values[i] = v2.values[j];
+                scalarSum += v1.values[i] * v2.values[i];
             }
-
-            return result;
+            return scalarSum;
         }
 
         public void MultiplicationScalar(int scalar)
@@ -177,7 +137,6 @@ namespace Academits.Barsukov
                 this.values[i] *= scalar;
             }
         }
-
 
         public void Rotate()
         {
