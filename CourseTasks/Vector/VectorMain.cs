@@ -43,7 +43,7 @@ namespace Academits.Barsukov
                 Console.WriteLine();
 
                 Console.WriteLine("Получение длины вектора");
-                Console.WriteLine(vector1.GetLength());
+                Console.WriteLine(vector1.Length());
                 Console.WriteLine();
 
                 Console.WriteLine("Получение компонента вектора по индексу 5");
@@ -86,10 +86,10 @@ namespace Academits.Barsukov
                 Console.WriteLine();
 
                 Console.WriteLine("Произведение одного вектора из другой с возвратом результата");
-                Vector r3 = Vector.GetMultiplication(vector1, vector2);
                 Console.WriteLine(vector1.ToString());
                 Console.WriteLine(vector2.ToString());
-                Console.WriteLine(r3.ToString());
+                double scalarSum = Vector.GetMultiplication(vector1, vector2);
+                Console.WriteLine("Скалярное произведение векторов: {0:f2}", scalarSum);
                 Console.WriteLine();
             }
             catch (Exception ex)
