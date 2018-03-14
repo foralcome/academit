@@ -87,7 +87,7 @@ namespace Academits.Barsukov
             }
             sb.Append('}');
 
-            return string.Format("Vector: size: {0} values: {1}", this.Size.ToString().PadLeft(3, ' '), sb.ToString());
+            return sb.ToString();
         }
 
         public void Addition(Vector v)
