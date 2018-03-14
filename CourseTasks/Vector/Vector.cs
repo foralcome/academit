@@ -80,7 +80,7 @@ namespace Academits.Barsukov
                 }
                 else
                 {
-                    sb.Append(',');
+                    sb.Append(", ");
                 }
 
                 sb.Append(v.ToString());
