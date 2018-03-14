@@ -11,10 +11,9 @@ namespace Academits.Barsukov
         private int Length
         {
             get;
-            set;
         }
 
-        public double[] values;
+        private double[] values;
 
         public Vector(int length)
         {
@@ -31,42 +30,57 @@ namespace Academits.Barsukov
 
         public Vector(Vector v)
         {
-            this.Length = v.Length;
-            this.values = new double[v.Length];
-            for (int i = 0; i < v.Length; i++)
+            if (v.Length == 0)
             {
-                this.values[i] = v.values[i];
+                throw new ArgumentException("length vector must be > 0!");
+            }
+            else
+            {
+                this.Length = v.Length;
+                this.values = new double[v.Length];
+                v.values.CopyTo(this.values, 0);
             }
         }
 
         public Vector(double[] arrayValues)
         {
-            this.Length = arrayValues.Length;
-            this.values = new double[this.Length];
-            for (int i = 0; i < arrayValues.Length; i++)
+            if (arrayValues.Length == 0)
             {
-                this.values[i] = arrayValues[i];
+                throw new ArgumentException("length array must be > 0!");
+            }
+            else
+            {
+                this.Length = arrayValues.Length;
+                this.values = new double[this.Length];
+                arrayValues.CopyTo(this.values, 0);
             }
         }
 
         public Vector(int n, double[] arrayValues)
         {
-            this.Length = n;
-            this.values = new double[n];
-            for (int i = 0; i < arrayValues.Length; i++)
+            if (arrayValues.Length == 0)
             {
-                this.values[i] = arrayValues[i];
+                throw new ArgumentException("length array must be > 0!");
             }
-            for (int i = arrayValues.Length; i < n; i++)
+            else
             {
-                this.values[i] = 0;
+                this.Length = n;
+                this.values = new double[n];
+                arrayValues.CopyTo(this.values, 0);
+
+                for (int i = arrayValues.Length; i < n; i++)
+                {
+                    this.values[i] = 0;
+                }
             }
         }
 
         public override string ToString()
         {
-            string str = "{";
+            StringBuilder sb = new StringBuilder();
+
             bool isfirst = true;
+            sb.Append('{');
             foreach (double v in this.values)
             {
                 if (isfirst)
@@ -75,27 +89,22 @@ namespace Academits.Barsukov
                 }
                 else
                 {
-                    str += ", ";
+                    sb.Append(',');
                 }
-                str += v.ToString();
-            }
-            str += "}";
 
-            return string.Format("Vector: size: {0} values: {1}", this.Length.ToString().PadLeft(3, ' '), str);
+                sb.Append(v.ToString());
+            }
+            sb.Append('}');
+
+            return string.Format("Vector: size: {0} values: {1}", this.Length.ToString().PadLeft(3, ' '), sb.ToString());
         }
 
         public void Addition(Vector v)
         {
-            int sizeMax = Math.Max(this.Length, v.Length);
-
-            Vector v1 = new Vector(sizeMax, this.values);
-            Vector v2 = new Vector(sizeMax, v.values);
-
-            this.Length = sizeMax;
-            this.values = new double[sizeMax];
-            for (int i = 0; i < sizeMax; i++)
+            int indexLimit = (v.values.Length < this.Length) ? v.values.Length : this.Length;
+            for (int i = 0; i < indexLimit; i++)
             {
-                this.values[i] = v1.values[i] + v2.values[i];
+                this.values[i] = this.values[i] + v.values[i];
             }
         }
 
@@ -103,30 +112,26 @@ namespace Academits.Barsukov
         {
             int sizeMax = Math.Max(v1.Length, v2.Length);
 
-            Vector localVector1 = new Vector(sizeMax, v1.values);
-            Vector localVector2 = new Vector(sizeMax, v2.values);
-            Vector result = new Vector(sizeMax);
-
-            for (int i = 0; i < sizeMax; i++)
+            if (v1.values.Length < v2.values.Length)
             {
-                result.values[i] = localVector1.values[i] + localVector2.values[i];
+                Vector result = new Vector(v2);
+                result.Addition(v1);
+                return result;
             }
-
-            return result;
+            else
+            {
+                Vector result = new Vector(v1);
+                result.Addition(v2);
+                return result;
+            }
         }
 
         public void Subtraction(Vector v)
         {
-            int sizeMax = Math.Max(this.Length, v.Length);
-
-            Vector v1 = new Vector(sizeMax, this.values);
-            Vector v2 = new Vector(sizeMax, v.values);
-
-            this.Length = sizeMax;
-            this.values = new double[sizeMax];
-            for (int i = 0; i < sizeMax; i++)
+            int indexLimit = (v.values.Length < this.Length) ? v.values.Length : this.Length;
+            for (int i = 0; i < indexLimit; i++)
             {
-                this.values[i] = v1.values[i] - v2.values[i];
+                this.values[i] = this.values[i] - v.values[i];
             }
         }
 
@@ -134,26 +139,25 @@ namespace Academits.Barsukov
         {
             int sizeMax = Math.Max(v1.Length, v2.Length);
 
-            Vector localVector1 = new Vector(sizeMax, v1.values);
-            Vector localVector2 = new Vector(sizeMax, v2.values);
-            Vector result = new Vector(sizeMax);
-
-            for (int i = 0; i < sizeMax; i++)
+            if (v1.values.Length < v2.values.Length)
             {
-                result.values[i] = localVector1.values[i] - localVector2.values[i];
+                Vector result = new Vector(v2);
+                result.Subtraction(v1);
+                return result;
             }
-
-            return result;
+            else
+            {
+                Vector result = new Vector(v1);
+                result.Subtraction(v2);
+                return result;
+            }
         }
 
         public static Vector GetMarge(Vector v1, Vector v2)
         {
             Vector result = new Vector(v1.Length + v2.Length);
 
-            for (int i = 0; i < v1.Length; i++)
-            {
-                result.values[i] = v1.values[i];
-            }
+            v1.values.CopyTo(result.values, 0);
             for (int i = v1.Length, j = 0; j < v2.Length; i++, j++)
             {
                 result.values[i] = v2.values[j];
@@ -169,21 +173,31 @@ namespace Academits.Barsukov
                 this.values[i] *= scalar;
             }
         }
+        public void Multiplication(Vector v)
+        {
+            int indexLimit = (v.values.Length < this.Length) ? v.values.Length : this.Length;
+            for (int i = 0; i < indexLimit; i++)
+            {
+                this.values[i] = this.values[i] * v.values[i];
+            }
+        }
 
         public static Vector GetMultiplication(Vector v1, Vector v2)
         {
             int sizeMax = Math.Max(v1.Length, v2.Length);
 
-            Vector localVector1 = new Vector(sizeMax, v1.values);
-            Vector localVector2 = new Vector(sizeMax, v2.values);
-            Vector result = new Vector(sizeMax);
-
-            for (int i = 0; i < sizeMax; i++)
+            if (v1.values.Length < v2.values.Length)
             {
-                result.values[i] = localVector1.values[i] * localVector2.values[i];
+                Vector result = new Vector(v2);
+                result.Multiplication(v1);
+                return result;
             }
-
-            return result;
+            else
+            {
+                Vector result = new Vector(v1);
+                result.Multiplication(v2);
+                return result;
+            }
         }
 
         public void Rotate()
@@ -198,15 +212,22 @@ namespace Academits.Barsukov
 
         public void Inversion()
         {
-            for (int i = 0; i < this.Length; i++)
-            {
-                this.values[i] *= -1;
-            }
+            MultiplicationScalar(-1);
         }
 
-        public int GetLength()
+        public double GetLength()
         {
-            return this.Length;
+            if (this.Length == 0)
+            {
+                return 0;
+            }
+
+            double lengthV = 0.0;
+            foreach (double v in this.values)
+            {
+                lengthV += Math.Pow(v, 2);
+            }
+            return Math.Sqrt(lengthV);
         }
 
         public double GetValueByIndex(int index)
