@@ -47,33 +47,18 @@ namespace Academits.Barsukov
             {
                 throw new ArgumentException("value n must be > 0!");
             }
-            else if (arrayValues.Length > n)
-            {
-                this.values = new double[n];
-                Array.Copy(arrayValues, this.values, n);
-            }
             else
             {
                 this.values = new double[n];
-                Array.Copy(arrayValues, this.values, arrayValues.Length);
-            }
-        }
 
-        public Vector(double[] arrayValues, int n)
-        {
-            if (arrayValues.Length == 0)
-            {
-                throw new ArgumentException("length array must be > 0!");
-            }
-            else if (arrayValues.Length > n)
-            {
-                this.values = new double[arrayValues.Length];
-                Array.Copy(arrayValues, this.values, n);
-            }
-            else
-            {
-                this.values = new double[arrayValues.Length];
-                Array.Copy(arrayValues, this.values, arrayValues.Length);
+                if (arrayValues.Length > n)
+                {
+                    Array.Copy(arrayValues, this.values, n);
+                }
+                else
+                {
+                    Array.Copy(arrayValues, this.values, arrayValues.Length);
+                }
             }
         }
 
@@ -85,11 +70,6 @@ namespace Academits.Barsukov
             }
         }
         
-        public double[] ToArray()
-        {
-            return this.values;
-        }
-
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -118,14 +98,7 @@ namespace Academits.Barsukov
         {
             if (this.Size < v.Size)
             {
-                //создаём временный массив
-                double[] thisMore = new double[this.Size];
-                //записываем туда содержимое this
-                this.values.CopyTo(thisMore, 0);
-                //увеличиваем размерность this
-                this.values = new double[v.Size];
-                //заполняем массив this старыми значениями
-                Array.Copy(thisMore, this.values, thisMore.Length);
+                Array.Resize(ref this.values,v.Size);
             }
 
             for (int i = 0; i < v.Size; i++)
@@ -145,14 +118,7 @@ namespace Academits.Barsukov
         {
             if (this.Size < v.Size)
             {
-                //создаём временный массив
-                double[] thisMore = new double[this.Size];
-                //записываем туда содержимое this
-                this.values.CopyTo(thisMore, 0);
-                //увеличиваем размерность this
-                this.values = new double[v.Size];
-                //заполняем массив this старыми значениями
-                Array.Copy(thisMore, this.values, thisMore.Length);
+                Array.Resize(ref this.values, v.Size);
             }
 
             for (int i = 0; i < v.Size; i++)
