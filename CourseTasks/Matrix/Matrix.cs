@@ -8,86 +8,87 @@ namespace Academits.Barsukov
 {
     class Matrix
     {
-        private int CountRows
-        {
-            get;
-        }
-        private int CountCols
-        {
-            get;
-        }
-
+        private int sizeHeight;
+        private int sizeWidth;
         private Vector[] vectors;
 
-        Matrix(int n, int m)
+        public Matrix(int sizeHeight, int sizeWidth)
         {
-            if (n <= 0 || m <= 0)
+            if (sizeHeight <= 0 || sizeWidth <= 0)
             {
                 throw new ArgumentException("неверное значение размера матрицы");
             }
 
-            this.CountRows = n;
-            this.CountCols = m;
-
-            this.vectors = new Vector[n];
-            for (int i = 0; i < CountCols; i++)
+            this.vectors = new Vector[sizeHeight];
+            this.sizeHeight = sizeHeight;
+            this.sizeWidth = sizeWidth;
+            for (int i = 0; i < sizeHeight; i++)
             {
-                this.vectors[i] = new Vector(m);
+                this.vectors[i] = new Vector(sizeWidth);
             }
         }
 
-        Matrix(Matrix matrix)
+        public Matrix(Matrix matrix)
         {
-            this.CountRows = matrix.CountCols;
-            this.CountCols = matrix.CountRows;
-
-            this.vectors = new Vector[this.CountRows];
-            for (int i = 0; i < this.CountRows; i++)
+            if (ReferenceEquals(matrix, null) || matrix.sizeHeight == 0)
             {
-                this.vectors[i] = new Vector(matrix.vectors[i].values);
+                throw new ArgumentException("передан неверный параметр");
+            }
+
+            this.sizeHeight = matrix.sizeHeight;
+            this.sizeWidth = matrix.sizeWidth;
+            this.vectors = new Vector[this.sizeHeight];
+            for (int i = 0; i < this.sizeHeight; i++)
+            {
+                this.vectors[i] = new Vector(matrix.vectors[i]);
             }
         }
 
-        Matrix(double[][] values)
+        public Matrix(double[][] values)
         {
-            this.CountRows = values.GetLength(0);
-            this.CountCols = values.GetLength(1);
+            if (ReferenceEquals(values, null) || values.GetLength(0) == 0)
+            {
+                throw new ArgumentException("передан неверный параметр");
+            }
 
-            this.vectors = new Vector[this.CountRows];
-            for (int i = 0; i < this.CountRows; i++)
+            this.sizeHeight = values.GetLength(0);
+            this.sizeWidth = values[0].Length;
+            this.vectors = new Vector[this.sizeHeight];
+            for (int i = 0; i < this.sizeHeight; i++)
             {
                 this.vectors[i] = new Vector(values[i]);
             }
         }
 
-        Matrix(Vector[] vectors)
+        public Matrix(Vector[] vectors)
         {
-            this.CountRows = vectors.Length;
-            this.vectors = new Vector[this.CountRows];
-
-            this.CountCols = 0;
-            foreach (Vector v in vectors)
+            if (ReferenceEquals(vectors, null) || vectors.Length == 0)
             {
-                if (v.GetLength() > this.CountCols)
-                {
-                    this.CountCols = v.GetLength();
-                }
+                throw new ArgumentException("передан неверный параметр");
             }
 
-            for (int i = 0; i < this.CountRows; i++)
+            this.sizeHeight = vectors.Length;
+            this.sizeWidth = vectors[0].Size;
+            this.vectors = new Vector[this.sizeHeight];
+            for (int i = 0; i < this.sizeHeight; i++)
             {
-                this.vectors[i] = new Vector(this.CountCols, vectors[i].values);
+                this.vectors[i] = new Vector(vectors[i]);
             }
         }
 
-        public int[] GetSize()
+        public int GetHeight()
         {
-            return new int[] { this.CountRows, this.CountCols };
+            return this.sizeHeight;
+        }
+
+        public int GetWidth()
+        {
+            return this.sizeWidth;
         }
 
         public Vector GetVectorRowByIndex(int index)
         {
-            if (index < 0 || index >= this.CountRows)
+            if (index < 0 || index >= this.sizeHeight)
             {
                 throw new IndexOutOfRangeException("передан не верный индекс!");
             }
@@ -97,62 +98,202 @@ namespace Academits.Barsukov
 
         public void SetVectorRowByIndex(Vector v, int index)
         {
-            if (index < 0 || index >= this.CountRows)
+            if (index < 0 || index >= this.sizeHeight)
             {
                 throw new IndexOutOfRangeException("передан не верный индекс!");
+            }
+
+            if (v.Size != this.sizeWidth)
+            {
+                throw new ArgumentException("размер вектора превышает размер ширины матрицы!");
             }
 
             this.vectors[index] = v;
         }
+
         public Vector GetVectorColByIndex(int index)
         {
-            if (index < 0 || index >= this.CountCols)
+            if (index < 0 || index >= this.sizeWidth)
             {
                 throw new IndexOutOfRangeException("передан не верный индекс!");
             }
 
-            Vector result = new Vector(this.CountRows);
-
-            for (int i = 0; i < this.CountRows; i++)
+            Vector result = new Vector(this.sizeHeight);
+            for (int i = 0; i < this.sizeHeight; i++)
             {
-                result.values[i] = this.vectors[i].GetValueByIndex(index);
+                result.SetValueByIndex(i, this.vectors[i].GetValueByIndex(index));
             }
-
             return result;
+        }
+
+        public void MultiplicationScalar(int scalar)
+        {
+            foreach (Vector v in this.vectors)
+            {
+                v.MultiplicationScalar(scalar);
+            }
+        }
+
+        private static double[][] GetMinor(double[][] matrix, int excludeI, int excludeJ)
+        {
+            int sizeMatrix = matrix.Length;
+
+            double[][] minor = new double[sizeMatrix - 1][];
+            for (int i = 0, ii = 0; i < sizeMatrix; i++)
+            {
+                if (i == excludeI)
+                {
+                    continue;
+                }
+
+                minor[ii] = new double[sizeMatrix - 1];
+                for (int j = 0, jj = 0; j < sizeMatrix; j++)
+                {
+                    if (j == excludeJ)
+                    {
+                        continue;
+                    }
+
+                    minor[ii][jj] = matrix[i][j];
+                    jj++;
+                }
+
+                ii++;
+            }
+            return minor;
+        }
+
+        private double GetDeterminant(double[][] matrix)
+        {
+            if (matrix.Length == 1)
+            {
+                return matrix[0][0];
+            }
+            else if (matrix.Length == 2)
+            {
+                return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
+            }
+            else
+            {
+                double determinant = 0;
+                for (int i = 0; i < matrix.Length; i++)
+                {
+                    int matrixSign = (i % 2 == 0) ? 1 : -1;
+                    determinant += matrixSign * matrix[0][i] * GetDeterminant(GetMinor(matrix, 0, i));
+                }
+
+                return determinant;
+            }
+        }
+
+        public double GetDeterminant()
+        {
+            double[][] matrix = new double[this.sizeHeight][];
+            for (int i = 0; i < sizeHeight; i++)
+            {
+                matrix[i] = new double[this.sizeWidth];
+                for (int j = 0; j < sizeHeight; j++)
+                {
+                    matrix[i][j] = this.vectors[i].GetValueByIndex(j);
+                }
+            }
+            return GetDeterminant(matrix);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("{");
+            bool isfirst = true;
+            foreach (Vector v in this.vectors)
+            {
+                if (isfirst)
+                {
+                    isfirst = false;
+                }
+                else
+                {
+                    sb.Append(", ");
+                }
+
+                sb.Append(v.ToString());
+            }
+            sb.Append('}');
+
+            return sb.ToString();
         }
 
         public Matrix Transposition()
         {
-            int newCountRows = this.CountCols;
-            int newCountCols = this.CountRows;
-
-            Matrix newMatrix = new Matrix(newCountRows, newCountCols);
-
-            for (int i = 0; i < this.CountRows; i++)
+            Matrix newMatrix = new Matrix(this.sizeWidth, this.sizeHeight);
+            for (int i = 0; i < this.sizeWidth; i++)
             {
-                for (int j = 0; j < this.CountCols; j++)
-                {
-                    newMatrix.vectors[j].values[i] = this.vectors[i].GetValueByIndex(j);
-                }
+                newMatrix.SetVectorRowByIndex(this.GetVectorColByIndex(i), i);
             }
-
             return newMatrix;
         }
 
-        public void MultiplicationScalar(int scalar)
+        public void MultiplicationVector(Vector v)
         {
-            for (int i = 0; i < this.CountRows; i++)
+            if (v.Size != this.sizeWidth)
             {
-                this.vectors[i].MultiplicationScalar(scalar);
+                throw new ArgumentException("вектор имеет размер отличный от ширины матрицы!");
+            }
+
+            for (int i = 0; i < this.sizeHeight; i++)
+            {
+                for (int j = 0; j < this.sizeWidth; j++)
+                {
+                    this.vectors[i].SetValueByIndex(j, this.vectors[i].GetValueByIndex(j) * v.GetValueByIndex(j));
+                }
             }
         }
 
-        public void MultiplicationScalar(int scalar)
+        public void Addition(Matrix m)
         {
-            for (int i = 0; i < this.CountRows; i++)
+            if (this.sizeHeight != m.sizeHeight || this.sizeWidth != m.sizeWidth)
             {
-                this.vectors[i].MultiplicationScalar(scalar);
+                throw new ArgumentException("размеры матриц не совпадают. сложение матриц невозможно!");
             }
+
+            for (int i = 0; i < this.sizeHeight; i++)
+            {
+                for (int j = 0; j < this.sizeWidth; j++)
+                {
+                    this.vectors[i].SetValueByIndex(j, this.vectors[i].GetValueByIndex(j) + m.vectors[i].GetValueByIndex(j));
+                }
+            }
+        }
+
+        public static Matrix GetAddition(Matrix m1, Matrix m2)
+        {
+            Matrix result = new Matrix(m1);
+            result.Addition(m2);
+            return result;
+        }
+
+        public void Subtraction(Matrix m)
+        {
+            if (this.sizeHeight != m.sizeHeight || this.sizeWidth != m.sizeWidth)
+            {
+                throw new ArgumentException("размеры матриц не совпадают. сложение матриц невозможно!");
+            }
+
+            for (int i = 0; i < this.sizeHeight; i++)
+            {
+                for (int j = 0; j < this.sizeWidth; j++)
+                {
+                    this.vectors[i].SetValueByIndex(j, this.vectors[i].GetValueByIndex(j) - m.vectors[i].GetValueByIndex(j));
+                }
+            }
+        }
+
+        public static Matrix GetSubtraction(Matrix m1, Matrix m2)
+        {
+            Matrix result = new Matrix(m1);
+            result.Subtraction(m2);
+            return result;
         }
     }
 }
