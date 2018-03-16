@@ -8,14 +8,6 @@ namespace Academits.Barsukov
 {
     public class Vector
     {
-        public int Size
-        {
-            get
-            {
-                return values.Length;
-            }
-        }
-
         private double[] values;
 
         public Vector(int length)
@@ -51,15 +43,51 @@ namespace Academits.Barsukov
 
         public Vector(int n, double[] arrayValues)
         {
-            if (arrayValues.Length == 0)
+            if (n <= 0)
             {
-                throw new ArgumentException("length array must be > 0!");
+                throw new ArgumentException("value n must be > 0!");
             }
-            else
+            else if (arrayValues.Length > n)
             {
                 this.values = new double[n];
                 Array.Copy(arrayValues, this.values, n);
             }
+            else
+            {
+                this.values = new double[n];
+                Array.Copy(arrayValues, this.values, arrayValues.Length);
+            }
+        }
+
+        public Vector(double[] arrayValues, int n)
+        {
+            if (arrayValues.Length == 0)
+            {
+                throw new ArgumentException("length array must be > 0!");
+            }
+            else if (arrayValues.Length > n)
+            {
+                this.values = new double[arrayValues.Length];
+                Array.Copy(arrayValues, this.values, n);
+            }
+            else
+            {
+                this.values = new double[arrayValues.Length];
+                Array.Copy(arrayValues, this.values, arrayValues.Length);
+            }
+        }
+
+        public int Size
+        {
+            get
+            {
+                return values.Length;
+            }
+        }
+        
+        public double[] ToArray()
+        {
+            return this.values;
         }
 
         public override string ToString()
@@ -88,8 +116,19 @@ namespace Academits.Barsukov
 
         public void Addition(Vector v)
         {
-            int indexLimit = Math.Min(v.values.Length, this.Size);
-            for (int i = 0; i < indexLimit; i++)
+            if (this.Size < v.Size)
+            {
+                //создаём временный массив
+                double[] thisMore = new double[this.Size];
+                //записываем туда содержимое this
+                this.values.CopyTo(thisMore, 0);
+                //увеличиваем размерность this
+                this.values = new double[v.Size];
+                //заполняем массив this старыми значениями
+                Array.Copy(thisMore, this.values, thisMore.Length);
+            }
+
+            for (int i = 0; i < v.Size; i++)
             {
                 this.values[i] += v.values[i];
             }
@@ -104,10 +143,21 @@ namespace Academits.Barsukov
 
         public void Subtraction(Vector v)
         {
-            int indexLimit = (v.values.Length < this.Size) ? v.values.Length : this.Size;
-            for (int i = 0; i < indexLimit; i++)
+            if (this.Size < v.Size)
             {
-                this.values[i] = this.values[i] - v.values[i];
+                //создаём временный массив
+                double[] thisMore = new double[this.Size];
+                //записываем туда содержимое this
+                this.values.CopyTo(thisMore, 0);
+                //увеличиваем размерность this
+                this.values = new double[v.Size];
+                //заполняем массив this старыми значениями
+                Array.Copy(thisMore, this.values, thisMore.Length);
+            }
+
+            for (int i = 0; i < v.Size; i++)
+            {
+                this.values[i] -= v.values[i];
             }
         }
 
