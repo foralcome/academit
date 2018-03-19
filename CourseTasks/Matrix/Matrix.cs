@@ -35,9 +35,9 @@ namespace Academits.Barsukov
 
         public Matrix(double[,] values)
         {
-            if (ReferenceEquals(values, null) || values.GetLength(0) == 0)
+            if (values.GetLength(0) == 0)
             {
-                throw new ArgumentException("передан неверный параметр");
+                throw new ArgumentException("передан пустой массив!");
             }
 
             this.vectors = new Vector[values.GetLength(0)];
@@ -54,21 +54,35 @@ namespace Academits.Barsukov
 
         public Matrix(Vector[] vectors)
         {
-            if (ReferenceEquals(vectors, null) || vectors.Length == 0)
+            //определяем максимальную длину векторов в массиве векторов
+            int sizeVectorsMax = 0;
+            for (int i = 0; i < vectors.Length; i++)
             {
-                throw new ArgumentException("передан неверный параметр");
+                if (vectors[i].Size > sizeVectorsMax)
+                {
+                    sizeVectorsMax = vectors[i].Size;
+                }
             }
 
             this.vectors = new Vector[vectors.Length];
             for (int i = 0; i < vectors.Length; i++)
             {
-                this.vectors[i] = new Vector(vectors[i]);
+                if (vectors[i].Size < sizeVectorsMax)
+                {
+                    Vector v = new Vector(sizeVectorsMax);
+                    v.Addition(vectors[i]);
+                    this.vectors[i] = new Vector(v);
+                }
+                else
+                {
+                    this.vectors[i] = new Vector(vectors[i]);
+                }
             }
         }
 
         public int GetCountCols()
         {
-            return (this.vectors.Length != 0) ? this.vectors[0].Size : 0;
+            return this.vectors[0].Size;
         }
 
         public int GetCountRows()
@@ -76,7 +90,7 @@ namespace Academits.Barsukov
             return this.vectors.Length;
         }
 
-        public Vector GetVectorRowByIndex(int index)
+        public Vector GetRowByIndex(int index)
         {
             if (index < 0 || index >= this.vectors.Length)
             {
@@ -98,7 +112,7 @@ namespace Academits.Barsukov
                 throw new ArgumentException("размер вектора превышает размер ширины матрицы!");
             }
 
-            this.vectors[index] = v;
+            this.vectors[index] = new Vector(v);
         }
 
         public Vector GetColByIndex(int index)
@@ -107,7 +121,7 @@ namespace Academits.Barsukov
             {
                 throw new Exception("произошло обращение к пустой матрице!");
             }
-            if (index < 0 || index >= this.vectors[0].Size)
+            if (index < 0 || index >= this.GetCountCols())
             {
                 throw new IndexOutOfRangeException("передан не верный индекс!");
             }
@@ -221,10 +235,9 @@ namespace Academits.Barsukov
             Matrix tmpMatrix = new Matrix(this);
 
             this.vectors = new Vector[tmpMatrix.vectors[0].Size];
-            for (int i = 0; i < tmpMatrix.vectors[0].Size; i++)
+            for (int i = 0; i < tmpMatrix.GetCountCols(); i++)
             {
-                Vector v = tmpMatrix.GetColByIndex(i);
-                this.SetRowByIndex(i, v);
+                this.SetRowByIndex(i, tmpMatrix.GetColByIndex(i));
             }
         }
 

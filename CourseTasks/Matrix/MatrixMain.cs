@@ -51,7 +51,7 @@ namespace Academits.Barsukov
                 Console.WriteLine("Получение вектора-строки по индексу");
                 Console.WriteLine("Матрица: {0}", m4.ToString());
                 Console.WriteLine("Индекс: {0}", 1);
-                Console.WriteLine(m4.GetVectorRowByIndex(1).ToString());
+                Console.WriteLine(m4.GetRowByIndex(1).ToString());
                 Console.WriteLine();
 
                 Console.WriteLine("Задание вектора-строки по индексу");
