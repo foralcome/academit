@@ -14,7 +14,7 @@ namespace Academits.Barsukov
         {
             if (countRows <= 0 || countCols <= 0)
             {
-                throw new ArgumentException("неверное значение размера матрицы");
+                throw new ArgumentException("размер матрицы должен быть > 0!");
             }
 
             this.vectors = new Vector[countRows];
@@ -35,7 +35,7 @@ namespace Academits.Barsukov
 
         public Matrix(double[,] values)
         {
-            if (values.GetLength(0) == 0)
+            if (values.GetLength(0) == 0 || values.GetLength(1) == 0)
             {
                 throw new ArgumentException("передан пустой массив!");
             }
@@ -54,40 +54,44 @@ namespace Academits.Barsukov
 
         public Matrix(Vector[] vectors)
         {
+            if (vectors.Length == 0)
+            {
+                throw new ArgumentException("передан пустой массив!");
+            }
+
             //определяем максимальную длину векторов в массиве векторов
             int sizeVectorsMax = 0;
-            for (int i = 0; i < vectors.Length; i++)
+            foreach (Vector v in vectors)
             {
-                if (vectors[i].Size > sizeVectorsMax)
+                if (v.Size > sizeVectorsMax)
                 {
-                    sizeVectorsMax = vectors[i].Size;
+                    sizeVectorsMax = v.Size;
                 }
             }
 
             this.vectors = new Vector[vectors.Length];
             for (int i = 0; i < vectors.Length; i++)
             {
-                if (vectors[i].Size < sizeVectorsMax)
-                {
-                    Vector v = new Vector(sizeVectorsMax);
-                    v.Addition(vectors[i]);
-                    this.vectors[i] = new Vector(v);
-                }
-                else
-                {
-                    this.vectors[i] = new Vector(vectors[i]);
-                }
+                Vector v = new Vector(sizeVectorsMax);
+                v.Addition(vectors[i]);
+                this.vectors[i] = new Vector(v);
             }
         }
 
-        public int GetCountCols()
+        public int CountCols
         {
-            return this.vectors[0].Size;
+            get
+            {
+                return this.vectors[0].Size;
+            }
         }
 
-        public int GetCountRows()
+        public int CountRows
         {
-            return this.vectors.Length;
+            get
+            {
+                return this.vectors.Length;
+            }
         }
 
         public Vector GetRowByIndex(int index)
@@ -107,7 +111,7 @@ namespace Academits.Barsukov
                 throw new IndexOutOfRangeException("передан не верный индекс!");
             }
 
-            if (this.vectors[0] != null && v.Size != this.vectors[0].Size)
+            if (v.Size != this.CountCols)
             {
                 throw new ArgumentException("размер вектора превышает размер ширины матрицы!");
             }
@@ -121,13 +125,13 @@ namespace Academits.Barsukov
             {
                 throw new Exception("произошло обращение к пустой матрице!");
             }
-            if (index < 0 || index >= this.GetCountCols())
+            if (index < 0 || index >= this.CountCols)
             {
                 throw new IndexOutOfRangeException("передан не верный индекс!");
             }
 
-            Vector result = new Vector(this.vectors.Length);
-            for (int i = 0; i < this.vectors.Length; i++)
+            Vector result = new Vector(this.CountRows);
+            for (int i = 0; i < this.CountRows; i++)
             {
                 result.SetValueByIndex(i, this.vectors[i].GetValueByIndex(index));
             }
@@ -195,7 +199,12 @@ namespace Academits.Barsukov
 
         public double GetDeterminant()
         {
-            double[,] matrix = new double[this.vectors.Length, this.vectors[0].Size];
+            if (this.CountRows == 0)
+            {
+                throw new Exception("исходная матрица пуста!");
+            }
+
+            double[,] matrix = new double[this.vectors.Length, this.CountCols];
             for (int i = 0; i < this.vectors.Length; i++)
             {
                 for (int j = 0; j < this.vectors.Length; j++)
@@ -232,18 +241,34 @@ namespace Academits.Barsukov
 
         public void Transposition()
         {
-            Matrix tmpMatrix = new Matrix(this);
-
-            this.vectors = new Vector[tmpMatrix.vectors[0].Size];
-            for (int i = 0; i < tmpMatrix.GetCountCols(); i++)
+            if (this.CountRows == 0)
             {
-                this.SetRowByIndex(i, tmpMatrix.GetColByIndex(i));
+                throw new Exception("исходная матрица пуста!");
+            }
+
+            int countRows = this.CountCols;
+            int countCols = this.CountRows;
+            Vector[] oldVectors = this.vectors;
+            this.vectors = new Vector[countRows];
+            for (int i = 0; i < countRows; i++)
+            {
+                this.vectors[i] = new Vector(countCols);
+                for (int j = 0; j < countCols; j++)
+                {
+                    Vector v = new Vector(countCols);
+                    this.vectors[i].SetValueByIndex(j, oldVectors[j].GetValueByIndex(i));
+                }
             }
         }
 
         public Vector MultiplicationVector(Vector v)
         {
-            if (v.Size != this.vectors[0].Size)
+            if (this.CountRows == 0)
+            {
+                throw new Exception("исходная матрица пуста!");
+            }
+
+            if (v.Size != this.CountCols)
             {
                 throw new ArgumentException("вектор имеет размер отличный от ширины матрицы!");
             }
@@ -263,7 +288,12 @@ namespace Academits.Barsukov
 
         public void Addition(Matrix m)
         {
-            if (this.vectors.Length != m.vectors.Length || this.vectors[0].Size != m.vectors[0].Size)
+            if (this.CountRows == 0)
+            {
+                throw new Exception("исходная матрица пуста!");
+            }
+
+            if (this.vectors.Length != m.vectors.Length || this.CountCols != m.CountCols)
             {
                 throw new ArgumentException("размеры матриц не совпадают. сложение матриц невозможно!");
             }
@@ -283,7 +313,12 @@ namespace Academits.Barsukov
 
         public void Subtraction(Matrix m)
         {
-            if (this.vectors.Length != m.vectors.Length || this.vectors[0].Size != m.vectors[0].Size)
+            if (this.CountRows == 0)
+            {
+                throw new Exception("исходная матрица пуста!");
+            }
+
+            if (this.vectors.Length != m.vectors.Length || this.CountCols != m.CountCols)
             {
                 throw new ArgumentException("размеры матриц не совпадают. сложение матриц невозможно!");
             }
@@ -303,12 +338,12 @@ namespace Academits.Barsukov
 
         public static Matrix GetMultiplication(Matrix m1, Matrix m2)
         {
-            if (m1.GetCountRows() != m2.GetCountCols() || m1.GetCountCols() != m2.GetCountRows())
+            if (m1.CountRows != m2.CountCols || m1.CountCols != m2.CountRows)
             {
                 throw new ArgumentException("Умножение матриц невозможно!");
             }
-            int resultCountRows = m1.GetCountRows();
-            int resultCountCols = m2.GetCountCols();
+            int resultCountRows = m1.CountRows;
+            int resultCountCols = m2.CountCols;
             Matrix result = new Matrix(resultCountRows, resultCountCols);
 
             for (int im1 = 0; im1 < resultCountRows; im1++)
@@ -316,7 +351,7 @@ namespace Academits.Barsukov
                 double[] resultArrayRow = new double[resultCountRows];
                 for (int im2 = 0; im2 < resultCountCols; im2++)
                 {
-                    for (int jm1 = 0; jm1 < m1.GetCountCols(); jm1++)
+                    for (int jm1 = 0; jm1 < m1.CountCols; jm1++)
                     {
                         resultArrayRow[im2] += m1.vectors[im1].GetValueByIndex(jm1) * m2.vectors[jm1].GetValueByIndex(im2);
                     }
