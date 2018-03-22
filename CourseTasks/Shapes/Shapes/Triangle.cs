@@ -8,35 +8,27 @@ namespace Academits.Barsukov
 {
     class Triangle : IShape
     {
-        private double X1
+        public double X1
         {
             get;
         }
-        private double Y1
+        public double Y1
         {
             get;
         }
-        private double X2
+        public double X2
         {
             get;
         }
-        private double Y2
+        public double Y2
         {
             get;
         }
-        private double X3
+        public double X3
         {
             get;
         }
-        private double Y3
-        {
-            get;
-        }
-        private double Area
-        {
-            get;
-        }
-        private double Perimeter
+        public double Y3
         {
             get;
         }
@@ -49,44 +41,55 @@ namespace Academits.Barsukov
             this.Y2 = y2;
             this.X3 = x3;
             this.Y3 = y3;
-
-            this.Perimeter = this.GetPerimeter();
-            this.Area = this.GetArea();
         }
 
         public double GetWidth()
         {
-            return 0.0;
+            double a = GetSideLength(X1, Y1, X2, Y2);
+            double b = GetSideLength(X3, Y3, X2, Y2);
+            double c = GetSideLength(X3, Y3, X1, Y1);
+
+            return Math.Max(Math.Max(a, b), c);
         }
 
         public double GetHeight()
         {
-            return 0.0;
+            double a = GetSideLength(X1, Y1, X2, Y2);
+            double b = GetSideLength(X3, Y3, X2, Y2);
+            double c = GetSideLength(X3, Y3, X1, Y1);
+
+            double p = (a + b + c) / 2;
+
+            return 2 * Math.Sqrt(p * (p - a) * (p - b) * p - c) / a;
         }
 
+        private double GetSideLength(double x1, double y1, double x2, double y2)
+        {
+            return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
+        }
         public double GetArea()
         {
-            double triangleLength12 = Math.Sqrt(Math.Pow(X1 - X2, 2) + Math.Pow(Y1 - Y2, 2));
-            double triangleLength23 = Math.Sqrt(Math.Pow(X3 - X2, 2) + Math.Pow(Y3 - Y2, 2));
-            double triangleLength31 = Math.Sqrt(Math.Pow(X3 - X1, 2) + Math.Pow(Y3 - Y1, 2));
+            double a = GetSideLength(X1, Y1, X2, Y2);
+            double b = GetSideLength(X3, Y3, X2, Y2);
+            double c = GetSideLength(X3, Y3, X1, Y1);
 
-            double semiperimeter = (triangleLength12 + triangleLength23 + triangleLength31) / 2;
+            double semiperimeter = (a + b + c) / 2;
 
-            return Math.Sqrt(semiperimeter * (semiperimeter - triangleLength12) * (semiperimeter - triangleLength23) * (semiperimeter - triangleLength31));
+            return Math.Sqrt(semiperimeter * (semiperimeter - a) * (semiperimeter - b) * (semiperimeter - c));
         }
 
         public double GetPerimeter()
         {
-            double triangleLength12 = Math.Sqrt(Math.Pow(X1 - X2, 2) + Math.Pow(Y1 - Y2, 2));
-            double triangleLength23 = Math.Sqrt(Math.Pow(X3 - X2, 2) + Math.Pow(Y3 - Y2, 2));
-            double triangleLength31 = Math.Sqrt(Math.Pow(X3 - X1, 2) + Math.Pow(Y3 - Y1, 2));
+            double a = GetSideLength(X1, Y1, X2, Y2);
+            double b = GetSideLength(X3, Y3, X2, Y2);
+            double c = GetSideLength(X3, Y3, X1, Y1);
 
-            return triangleLength12 + triangleLength23 + triangleLength31;
+            return a + b + c;
         }
 
         public override string ToString()
         {
-            return string.Format("area:{0:f2}, perimeter:{1:f2}", Area, Perimeter);
+            return string.Format("Triangle: area:{0:f2}, perimeter:{1:f2}", this.GetArea(), this.GetPerimeter());
         }
 
         public override bool Equals(Object o)

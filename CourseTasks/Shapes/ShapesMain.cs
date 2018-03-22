@@ -35,9 +35,10 @@ namespace Academits.Barsukov
             }
             Console.WriteLine();
 
-            Console.WriteLine("Отсортированный список фигур:");
             IShape[] ArrayShapes = ListShapes.ToArray();
-            Array.Sort(ArrayShapes, new ShapesCompareArea());
+
+            Console.WriteLine("Отсортированный список фигур по площади:");
+            Array.Sort(ArrayShapes, new ShapesAreaComparer());
             foreach (IShape shape in ArrayShapes)
             {
                 Console.WriteLine(shape.ToString());
@@ -55,6 +56,29 @@ namespace Academits.Barsukov
             {
                 s2 = (IShape)ArrayShapes.GetValue(ArrayShapes.Length - 2);
                 Console.WriteLine("Фигура на 2 месте по размеру площади: {0}", s2.ToString());
+            }
+            Console.WriteLine();
+
+
+            Console.WriteLine("Отсортированный список фигур по периметру:");
+            Array.Sort(ArrayShapes, new ShapesPerimeterComparer());
+            foreach (IShape shape in ArrayShapes)
+            {
+                Console.WriteLine(shape.ToString());
+            }
+            Console.WriteLine();
+
+            IShape s3 = null;
+            if (ArrayShapes.Length >= 1)
+            {
+                s3 = (IShape)ArrayShapes.GetValue(ArrayShapes.Length - 1);
+                Console.WriteLine("Фигура на 1 месте по размеру периметра: {0}", s3.ToString());
+            }
+            IShape s4 = null;
+            if (ArrayShapes.Length >= 2)
+            {
+                s4 = (IShape)ArrayShapes.GetValue(ArrayShapes.Length - 2);
+                Console.WriteLine("Фигура на 2 месте по размеру периметра: {0}", s4.ToString());
             }
             Console.WriteLine();
 
@@ -80,7 +104,14 @@ namespace Academits.Barsukov
             {
                 Console.WriteLine("Фигуры возможно одинаковые (хэш-коды фигур совпадают {0}=={1})", hashShape1, hashShape2);
             }
+            Console.WriteLine();
 
+            Console.WriteLine("Определение высоты треугольника:");
+            Triangle t = new Triangle(0, 0, 10, 10, 10, 0);
+            Console.WriteLine(t.ToString());
+            Console.WriteLine("Высота треугольника: {0}", t.GetHeight());
+            Console.WriteLine("Ширина треугольника: {0}", t.GetWidth());
+            Console.WriteLine();
         }
     }
 }

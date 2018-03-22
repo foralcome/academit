@@ -8,23 +8,13 @@ namespace Academits.Barsukov
 {
     public class Square : IShape
     {
-        private double Area
-        {
-            get;
-        }
-        private double Perimeter
-        {
-            get;
-        }
-        private double Length
+        public double Length
         {
             get;
         }
         public Square(double length)
         {
             this.Length = length;
-            this.Perimeter = GetPerimeter();
-            this.Area = GetArea();
         }
         public double GetArea()
         {
@@ -45,7 +35,7 @@ namespace Academits.Barsukov
 
         public override string ToString()
         {
-            return string.Format("area:{0:f2}, perimeter:{1:f2}", Area, Perimeter);
+            return string.Format("Square: area:{0:f2}, perimeter:{1:f2}", this.GetArea(), this.GetPerimeter());
         }
 
         public override bool Equals(Object o)

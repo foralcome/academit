@@ -8,27 +8,14 @@ namespace Academits.Barsukov
 {
     class Circle : IShape
     {
-        private double Radius
+        public double Radius
         {
             get;
         }
 
-        private double Area
-        {
-            get;
-        }
-
-        private double Perimeter
-        {
-            get;
-        }
-
-        public Circle(double radius)
+         public Circle(double radius)
         {
             this.Radius = radius;
-
-            this.Perimeter = this.GetPerimeter();
-            this.Area = this.GetArea();
         }
 
         public double GetWidth()
@@ -53,7 +40,7 @@ namespace Academits.Barsukov
 
         public override string ToString()
         {
-            return string.Format("area:{0:f2}, perimeter:{1:f2}", Area, Perimeter);
+            return string.Format("Circle: area:{0:f2}, perimeter:{1:f2}", this.GetArea(), this.GetPerimeter());
         }
 
         public override bool Equals(Object o)

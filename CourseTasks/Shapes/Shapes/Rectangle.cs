@@ -8,22 +8,12 @@ namespace Academits.Barsukov
 {
     class Rectangle : IShape
     {
-        private double Width
+        public double Width
         {
             get;
         }
 
-        private double Height
-        {
-            get;
-        }
-
-        private double Area
-        {
-            get;
-        }
-
-        private double Perimeter
+        public double Height
         {
             get;
         }
@@ -32,8 +22,6 @@ namespace Academits.Barsukov
         {
             this.Width = width;
             this.Height = height;
-            this.Perimeter = this.GetPerimeter();
-            this.Area = this.GetArea();
         }
 
         public double GetWidth()
@@ -58,7 +46,7 @@ namespace Academits.Barsukov
 
         public override string ToString()
         {
-            return string.Format("area:{0:f2}, perimeter:{1:f2}", Area, Perimeter);
+            return string.Format("Rectangle: area:{0:f2}, perimeter:{1:f2}", this.GetArea(), this.GetPerimeter());
         }
 
         public override bool Equals(Object o)
