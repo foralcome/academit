@@ -126,7 +126,7 @@ namespace Academits.Barsukov
                                     stringsCsv[countFoundCols] = stringsCsv[countFoundCols].Trim();
                                     countFoundCols++;
                                 }
-                                else if (csvData[i] == '"')
+                                else if (csvData[i] == '\"')
                                 {
                                     isQuote = true;
                                     indexStart = i;
@@ -151,7 +151,7 @@ namespace Academits.Barsukov
                                     {
                                         //сохраняем наше имя и убираем кавычки вначале и в конце строки
                                         stringsCsv[countFoundCols] = csvData.Substring(indexStart + 1, i - indexStart - 2);
-                                        stringsCsv[countFoundCols].Replace("\"\"", "\"");
+                                        stringsCsv[countFoundCols] = stringsCsv[countFoundCols].Replace("\"\"", "\"");
                                         stringsCsv[countFoundCols] = stringsCsv[countFoundCols].Trim();
 
                                         countFoundCols++;
@@ -169,7 +169,7 @@ namespace Academits.Barsukov
                                     {
                                         //сохраняем наше имя и убираем кавычки вначале и в конце строки
                                         stringsCsv[countFoundCols] = csvData.Substring(indexStart + 1, i - indexStart - 2);
-                                        stringsCsv[countFoundCols].Replace("\"\"", "\"");
+                                        stringsCsv[countFoundCols] = stringsCsv[countFoundCols].Replace("\"\"", "\"");
                                         stringsCsv[countFoundCols] = stringsCsv[countFoundCols].Trim();
 
                                         countFoundCols++;
@@ -182,7 +182,7 @@ namespace Academits.Barsukov
                                 else if (i == csvData.Length - 1)
                                 {
                                     stringsCsv[countFoundCols] = csvData.Substring(indexStart, i - indexStart + 1);
-                                    stringsCsv[countFoundCols].Replace("\"\"", "\"");
+                                    stringsCsv[countFoundCols] = stringsCsv[countFoundCols].Replace("\"\"", "\"");
                                     stringsCsv[countFoundCols] = stringsCsv[countFoundCols].Trim();
                                     countFoundCols++;
                                     isQuote = false;
