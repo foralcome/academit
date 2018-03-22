@@ -55,10 +55,10 @@ namespace Academits.Barsukov
         private string ReplaceToHTMLCode(string source)
         {
             string destination = source;
-            source.Replace("&", "&amp");
-            source.Replace("<", "&lt");
-            source.Replace(">", "&gt");
-            source.Replace(Environment.NewLine, "<br>");
+            destination = source.Replace("&", "&amp");
+            destination = source.Replace("<", "&lt");
+            destination = source.Replace(">", "&gt");
+            destination = source.Replace(Environment.NewLine, "<br>");
             return destination;
         }
 
@@ -198,10 +198,12 @@ namespace Academits.Barsukov
                                 stringsCsv[0] = "";
                                 sw.WriteLine("</td>");
                                 sw.WriteLine("<td>");
+                                stringsCsv[1] = ReplaceToHTMLCode(stringsCsv[1]);
                                 sw.WriteLine(stringsCsv[1]);
                                 stringsCsv[1] = "";
                                 sw.WriteLine("</td>");
                                 sw.WriteLine("<td>");
+                                stringsCsv[2] = ReplaceToHTMLCode(stringsCsv[2]);
                                 sw.WriteLine(stringsCsv[2]);
                                 stringsCsv[2] = "";
                                 sw.WriteLine("</td>");
