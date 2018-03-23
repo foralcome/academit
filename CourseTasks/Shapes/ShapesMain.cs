@@ -49,13 +49,13 @@ namespace Academits.Barsukov
             if (ArrayShapes.Length >= 1)
             {
                 s1 = (IShape)ArrayShapes.GetValue(ArrayShapes.Length - 1);
-                Console.WriteLine("Фигура на 1 месте по размеру площади: {0}", s1.ToString());
+                Console.WriteLine("Фигура {0} на 1 месте по размеру площади: {1}", s1.ToString(), s1.GetArea());
             }
             IShape s2 = null;
             if (ArrayShapes.Length >= 2)
             {
                 s2 = (IShape)ArrayShapes.GetValue(ArrayShapes.Length - 2);
-                Console.WriteLine("Фигура на 2 месте по размеру площади: {0}", s2.ToString());
+                Console.WriteLine("Фигура {0} на 2 месте по размеру площади: {1}", s2.ToString(), s2.GetArea());
             }
             Console.WriteLine();
 
@@ -72,13 +72,13 @@ namespace Academits.Barsukov
             if (ArrayShapes.Length >= 1)
             {
                 s3 = (IShape)ArrayShapes.GetValue(ArrayShapes.Length - 1);
-                Console.WriteLine("Фигура на 1 месте по размеру периметра: {0}", s3.ToString());
+                Console.WriteLine("Фигура {0} на 1 месте по размеру периметра: {1}", s3.ToString(), s3.GetPerimeter());
             }
             IShape s4 = null;
             if (ArrayShapes.Length >= 2)
             {
                 s4 = (IShape)ArrayShapes.GetValue(ArrayShapes.Length - 2);
-                Console.WriteLine("Фигура на 2 месте по размеру периметра: {0}", s4.ToString());
+                Console.WriteLine("Фигура {0} на 2 месте по размеру периметра: {1}", s4.ToString(), s4.GetPerimeter());
             }
             Console.WriteLine();
 

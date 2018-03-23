@@ -35,10 +35,10 @@ namespace Academits.Barsukov
 
         public override string ToString()
         {
-            return string.Format("Square: area:{0:f2}, perimeter:{1:f2}", this.GetArea(), this.GetPerimeter());
+            return string.Format("Square: length:{0:f2}", this.Length);
         }
 
-        public override bool Equals(Object o)
+        public override bool Equals(object o)
         {
             if (ReferenceEquals(o, this))
             {
@@ -57,7 +57,7 @@ namespace Academits.Barsukov
         {
             int prime = 37;
             int hash = 1;
-            hash = prime * hash + (int)Length;
+            hash = prime * hash + Length.GetHashCode();
             return hash;
         }
     }

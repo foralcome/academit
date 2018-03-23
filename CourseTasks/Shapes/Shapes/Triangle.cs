@@ -45,22 +45,12 @@ namespace Academits.Barsukov
 
         public double GetWidth()
         {
-            double a = GetSideLength(X1, Y1, X2, Y2);
-            double b = GetSideLength(X3, Y3, X2, Y2);
-            double c = GetSideLength(X3, Y3, X1, Y1);
-
-            return Math.Max(Math.Max(a, b), c);
+            return Math.Max(Math.Max(this.X1, this.X2), this.X3) - Math.Min(Math.Min(this.X1, this.X2), this.X3);
         }
 
         public double GetHeight()
         {
-            double a = GetSideLength(X1, Y1, X2, Y2);
-            double b = GetSideLength(X3, Y3, X2, Y2);
-            double c = GetSideLength(X3, Y3, X1, Y1);
-
-            double p = (a + b + c) / 2;
-
-            return 2 * Math.Sqrt(p * (p - a) * (p - b) * p - c) / a;
+            return Math.Max(Math.Max(this.Y1, this.Y2), this.Y3) - Math.Min(Math.Min(this.Y1, this.Y2), this.Y3);
         }
 
         private double GetSideLength(double x1, double y1, double x2, double y2)
@@ -89,10 +79,10 @@ namespace Academits.Barsukov
 
         public override string ToString()
         {
-            return string.Format("Triangle: area:{0:f2}, perimeter:{1:f2}", this.GetArea(), this.GetPerimeter());
+            return string.Format("Triangle: [1]({0:f2},{1:f2}) [2]({2:f2},{3:f2}) [3]({4:f2},{5:f2})", this.X1, this.Y1, this.X2, this.X2, this.X3, this.Y3);
         }
 
-        public override bool Equals(Object o)
+        public override bool Equals(object o)
         {
             if (ReferenceEquals(o, this))
             {
@@ -111,12 +101,12 @@ namespace Academits.Barsukov
         {
             int prime = 51;
             int hash = 1;
-            hash = prime * hash + (int)X1;
-            hash = prime * hash + (int)Y1;
-            hash = prime * hash + (int)X2;
-            hash = prime * hash + (int)Y2;
-            hash = prime * hash + (int)X3;
-            hash = prime * hash + (int)Y3;
+            hash = prime * hash + X1.GetHashCode();
+            hash = prime * hash + Y1.GetHashCode();
+            hash = prime * hash + X2.GetHashCode();
+            hash = prime * hash + Y2.GetHashCode();
+            hash = prime * hash + X3.GetHashCode();
+            hash = prime * hash + Y3.GetHashCode();
             return hash;
         }
     }

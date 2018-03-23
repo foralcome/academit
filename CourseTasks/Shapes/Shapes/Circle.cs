@@ -13,7 +13,7 @@ namespace Academits.Barsukov
             get;
         }
 
-         public Circle(double radius)
+        public Circle(double radius)
         {
             this.Radius = radius;
         }
@@ -30,7 +30,7 @@ namespace Academits.Barsukov
 
         public double GetArea()
         {
-            return 2 * Math.PI * Math.Pow(Radius, 2);
+            return Math.PI * Math.Pow(Radius, 2);
         }
 
         public double GetPerimeter()
@@ -40,10 +40,10 @@ namespace Academits.Barsukov
 
         public override string ToString()
         {
-            return string.Format("Circle: area:{0:f2}, perimeter:{1:f2}", this.GetArea(), this.GetPerimeter());
+            return string.Format("Circle: radius:{0:f2}", this.Radius);
         }
 
-        public override bool Equals(Object o)
+        public override bool Equals(object o)
         {
             if (ReferenceEquals(o, this))
             {
@@ -61,7 +61,7 @@ namespace Academits.Barsukov
         {
             int prime = 13;
             int hash = 1;
-            hash = prime * hash + (int)Radius;
+            hash = prime * hash + Radius.GetHashCode();
             return hash;
         }
     }
