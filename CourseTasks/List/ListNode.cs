@@ -6,25 +6,20 @@ using System.Threading.Tasks;
 
 namespace Academits.Barsukov
 {
-    public class ListNode
+    public class ListNode<T>
     {
-        public ListNode(double value)
+        public ListNode(T value)
         {
             this.Value = value;
         }
 
-        public ListNode(ListNode n)
-        {
-            this.Value = n.Value;
-        }
-
-        public double Value
+        public T Value
         {
             get;
             set;
         }
 
-        public ListNode Next
+        public ListNode<T> Next
         {
             get;
             set;
@@ -41,7 +36,7 @@ namespace Academits.Barsukov
                 return false;
             }
 
-            ListNode p = (ListNode)o;
+            ListNode<T> p = (ListNode<T>)o;
             return this.Value.Equals(p.Value);
         }
 
@@ -49,7 +44,7 @@ namespace Academits.Barsukov
         {
             int prime = 11;
             int hash = 1;
-            hash = prime * hash + (int)this.Value;
+            hash = prime * hash + this.Value.GetHashCode();
             return hash;
         }
     }

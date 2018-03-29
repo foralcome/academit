@@ -10,8 +10,8 @@ namespace Academits.Barsukov
     {
         static void Main(string[] args)
         {
-            double[] a1 = { 1, -2, 5, 2, 72, 42, 38, 3, 23, 90, 8, 45, 243 };
-            List l1 = new List(a1);
+            int[] a1 = { 1, -2, 5, 2, 72, 42, 38, 3, 23, 90, 8, 45, 243 };
+            List<int> l1 = new List<int>(a1);
             Console.WriteLine("Список: {0}", l1.ToString());
             Console.WriteLine("Размер списка: {0}", l1.GetLength());
             Console.WriteLine();
@@ -29,13 +29,13 @@ namespace Academits.Barsukov
             Console.WriteLine();
 
             Console.WriteLine("Вставка элемента 111 в начало");
-            l1.InsertNodeToBegin(new ListNode(111));
+            l1.InsertToBegin(111);
             Console.WriteLine("Список: {0}", l1.ToString());
             Console.WriteLine("Размер списка: {0}", l1.GetLength());
             Console.WriteLine();
 
             Console.WriteLine("Вставка элемента по индексу 2");
-            l1.InsertNodeByIndex(2, new ListNode(222));
+            l1.InsertByIndex(2, 222);
             Console.WriteLine("Список: {0}", l1.ToString());
             Console.WriteLine("Размер списка: {0}", l1.GetLength());
             Console.WriteLine();
@@ -78,7 +78,7 @@ namespace Academits.Barsukov
             Console.WriteLine();
 
             Console.WriteLine("копирование списка");
-            List copyList = l1.Copy();
+            List<int> copyList = l1.Copy();
             Console.WriteLine("Скопированный список: {0}", copyList.ToString());
             Console.WriteLine("Размер списка: {0}", copyList.GetLength());
             Console.WriteLine();

@@ -6,41 +6,52 @@ using System.Threading.Tasks;
 
 namespace Academits.Barsukov
 {
-    class List
+    class List<T>
     {
-        private int length;
-        private ListNode first;
-        private ListNode last;
+        private ListNode<T> first;
 
         public List()
         {
-            this.length = 0;
-            this.first = this.last = null;
+            this.Length = 0;
+            this.first = null;
         }
-        public List(double[] array)
+        public List(T[] array)
         {
-            foreach (double v in array)
+            foreach (T v in array)
             {
-                ListNode n = new ListNode(v);
+                ListNode<T> n = new ListNode<T>(v);
                 this.InsertNodeToEnd(n);
             }
         }
 
-        public int GetLength()
+        private int Length
         {
-            return length;
+            get;
+            set;
         }
 
-        public ListNode GetNodeByIndex(int index)
+        public int GetLength()
         {
-            if (index < 0 || index >= this.length)
+            int l = 0;
+            ListNode<T> n = this.first;
+            while (n != null)
+            {
+                l++;
+                n = n.Next;
+            }
+            return l;
+        }
+
+        private ListNode<T> GetNodeByIndex(int index)
+        {
+            if (index < 0 || index >= this.Length)
             {
                 throw new IndexOutOfRangeException("индекс имеет недопустимое значение!");
             }
 
             //начинаем обход с начала списка
-            ListNode n = this.first;
-            for (int i = 0; i < this.length; i++, n = n.Next)
+            ListNode<T> n = this.first;
+            for (int i = 0; i < this.Length; i++, n = n.Next)
             {
                 if (i == index)
                 {
@@ -50,16 +61,16 @@ namespace Academits.Barsukov
             return n;
         }
 
-        public double GetValueByIndex(int index)
+        public T GetValueByIndex(int index)
         {
-            if (index < 0 || index >= this.length)
+            if (index < 0 || index >= this.Length)
             {
                 throw new IndexOutOfRangeException("индекс имеет недопустимое значение!");
             }
 
             //начинаем обход с начала списка
-            ListNode n = this.first;
-            for (int i = 0; i < this.length; i++, n = n.Next)
+            ListNode<T> n = this.first;
+            for (int i = 0; i < this.Length; i++, n = n.Next)
             {
                 if (i == index)
                 {
@@ -69,109 +80,78 @@ namespace Academits.Barsukov
             return n.Value;
         }
 
-        public double SetValueByIndex(int index, double value)
+        public T SetValueByIndex(int index, T value)
         {
-            if (index < 0 || index >= this.length)
+            if (index < 0 || index >= this.Length)
             {
                 throw new IndexOutOfRangeException("индекс имеет недопустимое значение!");
             }
 
-            //начинаем обход с начала списка
-            ListNode n = this.first;
-            for (int i = 0; i < this.length; i++, n = n.Next)
-            {
-                if (i == index)
-                {
-                    break;
-                }
-            }
+            ListNode<T> n = GetNodeByIndex(index);
 
-            double oldValue = n.Value;
+            T oldValue = n.Value;
             n.Value = value;
             return oldValue;
         }
 
-        public double DeleteNodeFromBegin()
+        public T DeleteNodeFromBegin()
         {
-            if (this.length == 0)
+            if (this.Length == 0)
             {
                 throw new Exception("список пуст. удаление невозможно!");
             }
 
-            double returnValue = this.first.Value;
+            T returnValue = this.first.Value;
             this.first = this.first.Next;
-            this.length--;
             return returnValue;
         }
 
-        public double DeleteNodeByIndex(int index)
+        public T DeleteNodeByIndex(int index)
         {
-            if (index < 0 || index >= this.length)
+            if (index < 0 || index >= this.Length)
             {
                 throw new IndexOutOfRangeException("индекс имеет недопустимое значение!");
             }
 
-            ListNode n = this.first;
+            ListNode<T> n = GetNodeByIndex(index);
 
-            //это единственный элемент в 
-            if (this.length == 1)
+            //это первый элемент в списке
+            if (n == this.first)
             {
-                this.first = null;
-                this.last = null;
-                this.length = 0;
-                return n.Value;
+                this.first = n.Next;
             }
+            //это последний элемент в списке
+            else if (n.Next == null)
+            {
+                ListNode<T> nPrev = GetNodeByIndex(index - 1);
+                nPrev.Next = null;
+            }
+            //элемент где-то в середине списка
             else
             {
-                ListNode nPrev = null;
-                //начинаем обход с начала списка
-                for (int i = 0; i < this.length; i++)
-                {
-                    if (i == index)
-                    {
-                        break;
-                    }
-                    nPrev = n;
-                    n = n.Next;
-                }
-
-                //это первый элемент в списке
-                if (n == this.first)
-                {
-                    this.first = n.Next;
-                }
-                //это последний элемент в списке
-                else if (n.Next == null)
-                {
-                    this.last = nPrev;
-                    this.last.Next = null;
-                }
-                //элемент где-то в середине списка
-                else
-                {
-                    nPrev.Next = n.Next;
-                }
-
-                this.length--;
-                return n.Value;
+                ListNode<T> nPrev = GetNodeByIndex(index - 1);
+                nPrev.Next = n.Next;
             }
+
+            this.Length--;
+            return n.Value;
         }
 
-        public bool DeleteNodeByValue(int value)
+        public bool DeleteNodeByValue(T value)
         {
-            if (this.length == 0)
+            if (this.Length == 0)
             {
                 return false;
             }
 
-            ListNode nPrev = null;
-            ListNode n = this.first;
+            ListNode<T> nPrev = null;
+            ListNode<T> n = this.first;
             bool isFound = false;
 
             //начинаем обход с начала списка
             while (n != null)
             {
-                if (n.Value == value)
+                if (n.Value.Equals(value))
                 {
                     isFound = true;
                     break;
@@ -181,7 +161,7 @@ namespace Academits.Barsukov
                 n = n.Next;
             }
 
-            if (isFound == false)
+            if (!isFound)
             {
                 return false;
             }
@@ -194,8 +174,7 @@ namespace Academits.Barsukov
             //это последний элемент в списке
             else if (n.Next == null)
             {
-                this.last = nPrev;
-                this.last.Next = null;
+                nPrev.Next = null;
             }
             //элемент где-то в середине списка
             else
@@ -203,36 +182,29 @@ namespace Academits.Barsukov
                 nPrev.Next = n.Next;
             }
 
-            this.length--;
+            this.Length--;
             return true;
         }
 
-        public void InsertNodeToBegin(ListNode n)
+        public void InsertToBegin(T value)
         {
+            ListNode<T> n = new ListNode<T>(value);
+
             n.Next = this.first;
             this.first = n;
-            this.length++;
+            this.Length++;
         }
 
-        public void InsertNodeByIndex(int index, ListNode n)
+        public void InsertByIndex(int index, T value)
         {
-            if (index < 0 || index >= this.length)
+            ListNode<T> n = new ListNode<T>(value);
+
+            if (index < 0 || index >= this.Length)
             {
                 throw new IndexOutOfRangeException("индекс имеет недопустимое значение!");
             }
 
-            ListNode s = this.first;
-            ListNode sPrev = null;
-            //начинаем обход с начала списка
-            for (int i = 0; i < this.length; i++)
-            {
-                if (i == index)
-                {
-                    break;
-                }
-                sPrev = s;
-                s = s.Next;
-            }
+            ListNode<T> s = GetNodeByIndex(index);
 
             //это первый элемент в списке
             if (s == this.first)
@@ -242,37 +214,42 @@ namespace Academits.Barsukov
             }
             else
             {
+                ListNode<T> sPrev = GetNodeByIndex(index - 1);
                 n.Next = s;
                 sPrev.Next = n;
             }
 
-            this.length++;
+            this.Length++;
         }
 
-        public void InsertNodeToEnd(ListNode n)
+        public void InsertNodeToEnd(ListNode<T> n)
         {
-            if (this.last == null)
+            if (this.first == null)
             {
-                this.first = n;
-                this.last = n;
+                this.first = new ListNode<T>(n.Value);
             }
             else
             {
-                this.last.Next = n;
-                this.last = n;
+                ListNode<T> s = this.first;
+                while (s.Next != null)
+                {
+                    s = s.Next;
+                }
+
+                s.Next = new ListNode<T>(n.Value);
             }
 
-            this.length++;
+            this.Length++;
         }
 
         public void Rotate()
         {
-            ListNode newFirst = null;
+            ListNode<T> newFirst = null;
 
             //начинаем обход с начала списка
-            for (ListNode current = this.first; current != null;)
+            for (ListNode<T> current = this.first; current != null;)
             {
-                ListNode currentNext = current.Next;
+                ListNode<T> currentNext = current.Next;
                 current.Next = newFirst;
                 newFirst = current;
                 current = currentNext;
@@ -281,12 +258,12 @@ namespace Academits.Barsukov
             this.first = newFirst;
         }
 
-        public List Copy()
+        public List<T> Copy()
         {
-            List copyList = new List();
-            for (ListNode current = this.first; current != null; current = current.Next)
+            List<T> copyList = new List<T>();
+            for (ListNode<T> current = this.first; current != null; current = current.Next)
             {
-                ListNode copyNode = new ListNode(current);
+                ListNode<T> copyNode = new ListNode<T>(current.Value);
                 copyList.InsertNodeToEnd(copyNode);
             }
             return copyList;
@@ -296,7 +273,7 @@ namespace Academits.Barsukov
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("{");
-            ListNode n = this.first;
+            ListNode<T> n = this.first;
             while (n != null)
             {
                 sb.Append(n.Value);
@@ -321,13 +298,13 @@ namespace Academits.Barsukov
                 return false;
             }
 
-            List p = (List)o;
-            if (this.length != p.length)
+            List<T> p = (List<T>)o;
+            if (this.Length != p.Length)
             {
                 return false;
             }
-            ListNode thisNode = this.first;
-            ListNode objectNode = p.first;
+            ListNode<T> thisNode = this.first;
+            ListNode<T> objectNode = p.first;
             for (; thisNode != null; thisNode = thisNode.Next, objectNode = objectNode.Next)
             {
                 if (!thisNode.Equals(objectNode))
@@ -343,9 +320,9 @@ namespace Academits.Barsukov
             int prime = 11;
             int hash = 1;
 
-            for (ListNode n = this.first; n != null; n = n.Next)
+            for (ListNode<T> n = this.first; n != null; n = n.Next)
             {
-                hash = prime * hash + (int)n.Value;
+                hash = prime * hash + n.Value.GetHashCode();
             }
 
             return hash;
