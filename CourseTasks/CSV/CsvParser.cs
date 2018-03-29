@@ -55,29 +55,15 @@ namespace Academits.Barsukov
         private string ReplaceToHTMLCode(string source)
         {
             string destination = source;
-            destination = destination.Replace("&", "&amp");
-            destination = destination.Replace("<", "&lt");
-            destination = destination.Replace(">", "&gt");
-            destination = destination.Replace(Environment.NewLine, "<br>");
+            destination = destination.Replace("&", "&amp;");
+            destination = destination.Replace("<", "&lt;");
+            destination = destination.Replace(">", "&gt;");
             return destination;
-        }
-
-        private static int GetCountQuoteInString(string source)
-        {
-            int countQuote = 0;
-            for (int j = 0; j < source.Length; j++)
-            {
-                if (source[j] == '"')
-                {
-                    countQuote++;
-                }
-            }
-            return countQuote;
         }
 
         public bool ParseInHtmlFile(string fileWrite)
         {
-            if (this.isFileOpen == false)
+            if (!this.isFileOpen)
             {
                 throw new FileNotFoundException("файл не найден!!");
             }
@@ -85,7 +71,6 @@ namespace Academits.Barsukov
             this.CountRecords = 0;
             int countFoundCols = 0;
             string[] stringsCsv = new string[this.countColsInCsv];
-            int indexStart = 0;
             bool isQuote = false;
 
             try
@@ -97,58 +82,55 @@ namespace Academits.Barsukov
                         sw.WriteLine("< !DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">");
                         sw.WriteLine("<html>");
                         sw.WriteLine("<head>");
-                        sw.WriteLine(string.Format("<title>HTML-страница разбора CSV-файла {0}</title>", this.fileName));
-                        sw.WriteLine(string.Format("<meta http-equiv=\"Content-Type\" content=\"text/html; charset={0}\">", this.FileEncoding.HeaderName));
+                        sw.WriteLine("<title>HTML-страница разбора CSV-файла {0}</title>", this.fileName);
+                        sw.WriteLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset={0}\">", this.FileEncoding.HeaderName);
                         sw.WriteLine("<body>");
                         sw.WriteLine("<table>");
 
                         string csvData = sr.ReadToEnd();
 
+                        StringBuilder buffer = new StringBuilder();
+                        int countQuote = 0;
+
                         for (int i = 0; i < csvData.Length; i++)
                         {
-                            char c = csvData[i];
                             //пока не встретили кавычку "
                             if (!isQuote)
                             {
-                                if (csvData[i] == this.Separator || csvData[i] == '\r' || csvData[i] == '\n')
+                                //найден разделитель
+                                if (csvData[i] == this.Separator)
                                 {
-                                    char[] subString = new char[i - indexStart];
-                                    for (int j = indexStart, k = 0; j < i; j++, k++)
-                                    {
-                                        subString[k] = csvData[j];
-                                    }
-                                    stringsCsv[countFoundCols] = new string(subString);
+                                    stringsCsv[countFoundCols] = buffer.ToString();
+                                    buffer.Clear();
                                     countFoundCols++;
-
-                                    if (csvData[i] == this.Separator)
-                                    {
-                                        indexStart = i + 1;
-                                    }
-                                    else
-                                    {
-                                        indexStart = i + Environment.NewLine.Length;
-                                        i = indexStart;
-                                    }
                                 }
                                 //достигнут конец файла
                                 else if (i == csvData.Length - 1)
                                 {
-                                    char[] subString = new char[i - indexStart + 1];
-                                    for (int j = indexStart, k = 0; j < i + 1; j++, k++)
-                                    {
-                                        subString[k] = csvData[j];
-                                    }
-                                    stringsCsv[countFoundCols] = new string(subString);
-
+                                    stringsCsv[countFoundCols] = buffer.ToString();
+                                    buffer.Clear();
                                     countFoundCols++;
                                 }
+                                //найдена кавычка
                                 else if (csvData[i] == '\"')
                                 {
                                     isQuote = true;
-                                    indexStart = i;
+                                    countQuote = 1;
+                                    buffer.Clear();
+                                    continue;
+                                }
+                                //обнаружен перенос строки
+                                else if (csvData[i] == '\r' || csvData[i] == '\n')
+                                {
+                                    stringsCsv[countFoundCols] = buffer.ToString();
+                                    buffer.Clear();
+                                    countFoundCols++;
+
+                                    i += Environment.NewLine.Length - 1;
                                 }
                                 else
                                 {
+                                    buffer.Append(csvData[i]);
                                     continue;
                                 }
                             }
@@ -156,50 +138,56 @@ namespace Academits.Barsukov
                             else
                             {
                                 //найден разделитель
-                                if (csvData[i] == this.Separator || csvData[i] == '\r' || csvData[i] == '\n')
+                                if (csvData[i] == this.Separator && countQuote % 2 == 0)
                                 {
-                                    //сохраняем наше имя
-                                    int lengthSubString = i - indexStart - 2;
-                                    int countQuote = 0;
-                                    char[] subString = new char[lengthSubString];
-                                    for (int j = indexStart, k = 0; j < i; j++, k++)
-                                    {
-                                        if (csvData[j] == '"')
-                                        {
-                                            countQuote++;
-                                        }
-                                        if (k < lengthSubString)
-                                        {
-                                            subString[k] = csvData[j + 1];
-                                        }
-                                    }
-                                    //проверяем имя на завершённость (количество кавычек должно быть чётным с учётом первой
-                                    if (countQuote % 2 == 0)
-                                    {
-                                        stringsCsv[countFoundCols] = new string(subString);
-                                        stringsCsv[countFoundCols] = stringsCsv[countFoundCols].Replace("\"\"", "\"");
-                                        countFoundCols++;
-
-                                        if (csvData[i] == this.Separator)
-                                        {
-                                            indexStart = i + 1;
-                                        }
-                                        else
-                                        {
-                                            indexStart = i + Environment.NewLine.Length;
-                                            i = indexStart;
-                                        }
-
-                                        isQuote = false;
-                                    }
+                                    stringsCsv[countFoundCols] = buffer.ToString();
+                                    countFoundCols++;
+                                    countQuote = 0;
+                                    buffer.Clear();
+                                    isQuote = false;
                                 }
-                                //достигнут конец файла
+                                //это предпоследний символ в файле
                                 else if (i == csvData.Length - 1)
                                 {
-                                    stringsCsv[countFoundCols] = csvData.Substring(indexStart, i - indexStart + 1);
-                                    stringsCsv[countFoundCols] = stringsCsv[countFoundCols].Replace("\"\"", "\"");
+                                    stringsCsv[countFoundCols] = buffer.ToString();
                                     countFoundCols++;
                                     isQuote = false;
+                                    buffer.Clear();
+                                }
+                                //обнаружен перенос строки
+                                else if (csvData[i] == '\r' || csvData[i] == '\n')
+                                {
+                                    if (countQuote % 2 == 0)
+                                    {
+                                        stringsCsv[countFoundCols] = buffer.ToString();
+                                        countFoundCols++;
+                                        isQuote = false;
+                                        buffer.Clear();
+                                    }
+                                    else
+                                    {
+                                        buffer.Append("<br>");
+                                    }
+
+                                    i += Environment.NewLine.Length - 1;
+                                }
+                                //найдена кавычка
+                                else if (csvData[i] == '"')
+                                {
+                                    if (csvData[i + 1] == '"')
+                                    {
+                                        buffer.Append("\"");
+                                        i++;
+                                    }
+                                    else
+                                    {
+                                        countQuote++;
+                                    }
+                                }
+                                else
+                                {
+                                    buffer.Append(csvData[i]);
+                                    continue;
                                 }
                             }
 
