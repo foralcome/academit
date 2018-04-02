@@ -20,7 +20,7 @@ namespace Academits.Barsukov
             }
             else
             {
-                CsvParser p = new CsvParser(args[0], 3, ',', Encoding.UTF8);
+                CsvParser p = new CsvParser(args[0], ',', Encoding.UTF8);
                 if (p.ParseInHtmlFile(args[1]))
                 {
                     Console.WriteLine("Операция чтения файла CSV выполнена успешно! Обработано {0} строк(и).", p.GetCountRecords());

@@ -9,12 +9,11 @@ namespace Academits.Barsukov
 {
     class CsvParser
     {
-        private int countColsInCsv;
         private string fileName;
         private string filePath;
         private bool isFileOpen;
 
-        public CsvParser(string filePath, int countCols, char separator, Encoding encoding)
+        public CsvParser(string filePath, char separator, Encoding encoding)
         {
             if (!File.Exists(filePath))
             {
@@ -25,7 +24,6 @@ namespace Academits.Barsukov
             this.filePath = filePath;
             this.fileName = Path.GetFileName(filePath);
             this.FileEncoding = encoding;
-            this.countColsInCsv = countCols;
             this.Separator = separator;
 
             this.isFileOpen = true;
@@ -52,13 +50,25 @@ namespace Academits.Barsukov
             return this.CountRecords;
         }
 
-        private string ReplaceToHTMLCode(string source)
+        private string GetHTMLCodeByChar(char c)
         {
-            string destination = source;
-            destination = destination.Replace("&", "&amp;");
-            destination = destination.Replace("<", "&lt;");
-            destination = destination.Replace(">", "&gt;");
-            return destination;
+            string s;
+            switch (c)
+            {
+                case '&':
+                    s = "&amp;";
+                    break;
+                case '<':
+                    s = "&lt;";
+                    break;
+                case '>':
+                    s = "&gt;";
+                    break;
+                default:
+                    s = "" + c;
+                    break;
+            }
+            return s;
         }
 
         public bool ParseInHtmlFile(string fileWrite)
@@ -69,9 +79,9 @@ namespace Academits.Barsukov
             }
 
             this.CountRecords = 0;
-            int countFoundCols = 0;
-            string[] stringsCsv = new string[this.countColsInCsv];
             bool isQuote = false;
+            bool isBlockEnd = true;
+            bool isRowEnd = true;
 
             try
             {
@@ -89,7 +99,7 @@ namespace Academits.Barsukov
 
                         string csvData = sr.ReadToEnd();
 
-                        StringBuilder buffer = new StringBuilder();
+                        StringBuilder resultData = new StringBuilder();
                         int countQuote = 0;
 
                         for (int i = 0; i < csvData.Length; i++)
@@ -100,37 +110,37 @@ namespace Academits.Barsukov
                                 //найден разделитель
                                 if (csvData[i] == this.Separator)
                                 {
-                                    stringsCsv[countFoundCols] = buffer.ToString();
-                                    buffer.Clear();
-                                    countFoundCols++;
-                                }
-                                //достигнут конец файла
-                                else if (i == csvData.Length - 1)
-                                {
-                                    stringsCsv[countFoundCols] = buffer.ToString();
-                                    buffer.Clear();
-                                    countFoundCols++;
+                                    isBlockEnd = true;
                                 }
                                 //найдена кавычка
                                 else if (csvData[i] == '\"')
                                 {
                                     isQuote = true;
                                     countQuote = 1;
-                                    buffer.Clear();
                                     continue;
                                 }
                                 //обнаружен перенос строки
                                 else if (csvData[i] == '\r' || csvData[i] == '\n')
                                 {
-                                    stringsCsv[countFoundCols] = buffer.ToString();
-                                    buffer.Clear();
-                                    countFoundCols++;
+                                    isBlockEnd = true;
+                                    isRowEnd = true;
 
                                     i += Environment.NewLine.Length - 1;
                                 }
                                 else
                                 {
-                                    buffer.Append(csvData[i]);
+                                    if (isRowEnd == true)
+                                    {
+                                        resultData.Append("<tr>");
+                                        isRowEnd = false;
+                                    }
+                                    if (isBlockEnd == true)
+                                    {
+                                        resultData.Append("<td>");
+                                        isBlockEnd = false;
+                                    }
+
+                                    resultData.Append(GetHTMLCodeByChar(csvData[i]));
                                     continue;
                                 }
                             }
@@ -140,33 +150,22 @@ namespace Academits.Barsukov
                                 //найден разделитель
                                 if (csvData[i] == this.Separator && countQuote % 2 == 0)
                                 {
-                                    stringsCsv[countFoundCols] = buffer.ToString();
-                                    countFoundCols++;
                                     countQuote = 0;
-                                    buffer.Clear();
                                     isQuote = false;
-                                }
-                                //это предпоследний символ в файле
-                                else if (i == csvData.Length - 1)
-                                {
-                                    stringsCsv[countFoundCols] = buffer.ToString();
-                                    countFoundCols++;
-                                    isQuote = false;
-                                    buffer.Clear();
+                                    isBlockEnd = true;
                                 }
                                 //обнаружен перенос строки
                                 else if (csvData[i] == '\r' || csvData[i] == '\n')
                                 {
                                     if (countQuote % 2 == 0)
                                     {
-                                        stringsCsv[countFoundCols] = buffer.ToString();
-                                        countFoundCols++;
                                         isQuote = false;
-                                        buffer.Clear();
+                                        isBlockEnd = true;
+                                        isRowEnd = true;
                                     }
                                     else
                                     {
-                                        buffer.Append("<br>");
+                                        resultData.Append("<br>");
                                     }
 
                                     i += Environment.NewLine.Length - 1;
@@ -174,9 +173,15 @@ namespace Academits.Barsukov
                                 //найдена кавычка
                                 else if (csvData[i] == '"')
                                 {
+                                    if (isBlockEnd == true)
+                                    {
+                                        resultData.Append("<td>");
+                                        isBlockEnd = false;
+                                    }
+
                                     if (csvData[i + 1] == '"')
                                     {
-                                        buffer.Append("\"");
+                                        resultData.Append("\"");
                                         i++;
                                     }
                                     else
@@ -186,35 +191,22 @@ namespace Academits.Barsukov
                                 }
                                 else
                                 {
-                                    buffer.Append(csvData[i]);
+                                    resultData.Append(GetHTMLCodeByChar(csvData[i]));
                                     continue;
                                 }
                             }
 
-                            if (countFoundCols == this.countColsInCsv)
+                            if (isBlockEnd == true)
                             {
-                                sw.WriteLine("<tr>");
-                                sw.WriteLine("<td>");
-                                stringsCsv[0] = ReplaceToHTMLCode(stringsCsv[0]);
-                                sw.WriteLine(stringsCsv[0]);
-                                stringsCsv[0] = "";
-                                sw.WriteLine("</td>");
-                                sw.WriteLine("<td>");
-                                stringsCsv[1] = ReplaceToHTMLCode(stringsCsv[1]);
-                                sw.WriteLine(stringsCsv[1]);
-                                stringsCsv[1] = "";
-                                sw.WriteLine("</td>");
-                                sw.WriteLine("<td>");
-                                stringsCsv[2] = ReplaceToHTMLCode(stringsCsv[2]);
-                                sw.WriteLine(stringsCsv[2]);
-                                stringsCsv[2] = "";
-                                sw.WriteLine("</td>");
-                                sw.WriteLine("</tr>");
-
-                                this.CountRecords++;
-                                countFoundCols = 0;
+                                resultData.Append("</td>");
+                            }
+                            if (isRowEnd == true)
+                            {
+                                resultData.Append("</tr>");
                             }
                         }
+                        sw.WriteLine(resultData);
+
                         sw.WriteLine("</table>");
                         sw.WriteLine("</body>");
                         sw.WriteLine("</html>");
