@@ -18,13 +18,13 @@ namespace Academits.Barsukov
                 m1.SetRowByIndex(1, new Vector(new double[] { 3, 77, -8, 9, 1 }));
                 m1.SetRowByIndex(2, new Vector(new double[] { 4, -21, 13, 31, 99 }));
                 Console.WriteLine(m1.ToString());
-                Console.WriteLine("Размер матрицы: {0} x {1}", m1.CountRows, m1.CountCols);
+                Console.WriteLine("Размер матрицы: {0} x {1}", m1.RowsCount, m1.ColsCount);
                 Console.WriteLine();
 
                 Console.WriteLine("Конструктор 2");
                 Matrix m2 = new Matrix(m1);
                 Console.WriteLine(m2.ToString());
-                Console.WriteLine("Размер матрицы: {0} x {1}", m2.CountRows, m2.CountCols);
+                Console.WriteLine("Размер матрицы: {0} x {1}", m2.RowsCount, m2.ColsCount);
                 Console.WriteLine();
 
                 Console.WriteLine("Конструктор 3");
@@ -34,7 +34,7 @@ namespace Academits.Barsukov
                     { 9, 10, 0, -1 } };
                 Matrix m3 = new Matrix(a3);
                 Console.WriteLine(m3.ToString());
-                Console.WriteLine("Размер матрицы: {0} x {1}", m3.CountRows, m3.CountCols);
+                Console.WriteLine("Размер матрицы: {0} x {1}", m3.RowsCount, m3.ColsCount);
                 Console.WriteLine();
 
                 Console.WriteLine("Конструктор 4");
@@ -45,7 +45,7 @@ namespace Academits.Barsukov
                 av4[3] = new Vector(new double[] { 13, 14, 15, 16 });
                 Matrix m4 = new Matrix(av4);
                 Console.WriteLine(m4.ToString());
-                Console.WriteLine("Размер матрицы: {0} x {1}", m4.CountRows, m4.CountCols);
+                Console.WriteLine("Размер матрицы: {0} x {1}", m4.RowsCount, m4.ColsCount);
                 Console.WriteLine();
 
                 Console.WriteLine("Получение вектора-строки по индексу");
@@ -70,10 +70,10 @@ namespace Academits.Barsukov
 
                 Console.WriteLine("Транспонирование матрицы");
                 Console.WriteLine("Матрица до: {0}", m4.ToString());
-                Console.WriteLine("Размер матрицы: {0} x {1}", m4.CountRows, m4.CountCols);
+                Console.WriteLine("Размер матрицы: {0} x {1}", m4.RowsCount, m4.ColsCount);
                 m4.Transposition();
                 Console.WriteLine("Матрица после: {0}", m4.ToString());
-                Console.WriteLine("Размер матрицы: {0} x {1}", m4.CountRows, m4.CountCols);
+                Console.WriteLine("Размер матрицы: {0} x {1}", m4.RowsCount, m4.ColsCount);
                 Console.WriteLine();
 
                 Console.WriteLine("Умножение матрицы на скаляр");
