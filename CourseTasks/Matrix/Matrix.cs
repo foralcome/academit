@@ -288,6 +288,11 @@ namespace Academits.Barsukov
 
         public static Matrix GetAddition(Matrix m1, Matrix m2)
         {
+            if (m1.vectors.Length != m2.vectors.Length || m1.ColsCount != m2.ColsCount)
+            {
+                throw new ArgumentException("размеры матриц не совпадают. сложение матриц невозможно!");
+            }
+
             Matrix result = new Matrix(m1);
             result.Addition(m2);
             return result;
@@ -308,6 +313,11 @@ namespace Academits.Barsukov
 
         public static Matrix GetSubtraction(Matrix m1, Matrix m2)
         {
+            if (m1.vectors.Length != m2.vectors.Length || m1.ColsCount != m2.ColsCount)
+            {
+                throw new ArgumentException("размеры матриц не совпадают. сложение матриц невозможно!");
+            }
+
             Matrix result = new Matrix(m1);
             result.Subtraction(m2);
             return result;
@@ -325,15 +335,12 @@ namespace Academits.Barsukov
 
             for (int im1 = 0; im1 < resultCountRows; im1++)
             {
-                double[] resultArrayRow = new double[resultCountRows];
+                Vector resultVector = new Vector(resultCountCols);
                 for (int im2 = 0; im2 < resultCountCols; im2++)
                 {
-                    for (int jm1 = 0; jm1 < m1.ColsCount; jm1++)
-                    {
-                        resultArrayRow[im2] += m1.vectors[im1].GetValueByIndex(jm1) * m2.vectors[jm1].GetValueByIndex(im2);
-                    }
+                    resultVector.SetValueByIndex( im2, Vector.GetMultiplication(m1.vectors[im1], m2.GetColByIndex(im2)));
                 }
-                result.SetRowByIndex(im1, new Vector(resultArrayRow));
+                result.vectors[im1] = resultVector;
             }
             return result;
         }
