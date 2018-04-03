@@ -65,7 +65,7 @@ namespace Academits.Barsukov
                     s = "&gt;";
                     break;
                 default:
-                    s = "" + c;
+                    s = c.ToString();
                     break;
             }
             return s;
@@ -89,11 +89,12 @@ namespace Academits.Barsukov
                 {
                     using (StreamWriter sw = new StreamWriter(fileWrite))
                     {
-                        sw.WriteLine("< !DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">");
+                        sw.WriteLine("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">");
                         sw.WriteLine("<html>");
                         sw.WriteLine("<head>");
                         sw.WriteLine("<title>HTML-страница разбора CSV-файла {0}</title>", this.fileName);
                         sw.WriteLine("<meta http-equiv=\"Content-Type\" content=\"text/html; charset={0}\">", this.FileEncoding.HeaderName);
+                        sw.WriteLine("</head>");
                         sw.WriteLine("<body>");
                         sw.WriteLine("<table>");
 
@@ -117,6 +118,8 @@ namespace Academits.Barsukov
                                 {
                                     isQuote = true;
                                     countQuote = 1;
+                                    isBlockEnd = false;
+                                    resultData.Append("<td>");
                                     continue;
                                 }
                                 //обнаружен перенос строки
@@ -139,7 +142,6 @@ namespace Academits.Barsukov
                                         resultData.Append("<td>");
                                         isBlockEnd = false;
                                     }
-
                                     resultData.Append(GetHTMLCodeByChar(csvData[i]));
                                     continue;
                                 }
@@ -173,12 +175,6 @@ namespace Academits.Barsukov
                                 //найдена кавычка
                                 else if (csvData[i] == '"')
                                 {
-                                    if (isBlockEnd == true)
-                                    {
-                                        resultData.Append("<td>");
-                                        isBlockEnd = false;
-                                    }
-
                                     if (csvData[i + 1] == '"')
                                     {
                                         resultData.Append("\"");
@@ -191,6 +187,17 @@ namespace Academits.Barsukov
                                 }
                                 else
                                 {
+                                    if (isRowEnd == true)
+                                    {
+                                        resultData.Append("<tr>");
+                                        isRowEnd = false;
+                                    }
+                                    if (isBlockEnd == true)
+                                    {
+                                        resultData.Append("<td>");
+                                        isBlockEnd = false;
+                                    }
+
                                     resultData.Append(GetHTMLCodeByChar(csvData[i]));
                                     continue;
                                 }
