@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace Academits.Barsukov
 {
-    class ArrayList<T> : IList<T>
+    public class ArrayList<T> : IList<T>
     {
         private T[] items;
         private int length;
-        private int capacity;
 
         public ArrayList(int capacity)
         {
@@ -21,7 +20,6 @@ namespace Academits.Barsukov
             }
 
             this.items = new T[capacity];
-            this.Capacity = capacity;
         }
 
         public int Count
@@ -32,7 +30,7 @@ namespace Academits.Barsukov
         //Размер этого массива
         public int Capacity
         {
-            get { return capacity; }
+            get { return items.Length; }
             set
             {
                 if (value < Count)
@@ -41,19 +39,23 @@ namespace Academits.Barsukov
                 }
                 else
                 {
-                    capacity = value;
-                    SetCapacity(capacity);
+                    SetCapacity(value);
                 }
             }
         }
 
-        public bool IsReadOnly => throw new NotImplementedException();
+        bool ICollection<T>.IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         private void IncreaseCapacity()
         {
             T[] old = items;
-            this.capacity = old.Length * 2;
-            items = new T[this.capacity];
+            items = new T[old.Length * 2];
             Array.Copy(old, 0, items, 0, old.Length);
         }
 
@@ -63,10 +65,13 @@ namespace Academits.Barsukov
             {
                 throw new ArgumentOutOfRangeException("новый размер списка должен быть больше количества элементов находящихся в нём!");
             }
-            T[] old = items;
-            this.capacity = capacity;
-            items = new T[capacity];
-            Array.Copy(old, 0, items, 0, this.Count);
+
+            if (capacity > this.Capacity)
+            {
+                T[] old = items;
+                items = new T[capacity];
+                Array.Copy(old, 0, items, 0, this.Count);
+            }
         }
 
         public T this[int index]
@@ -97,10 +102,10 @@ namespace Academits.Barsukov
 
         public void TrimExcess()
         {
-            T[] old = items;
-            items = new T[this.Count];
-            Array.Copy(old, 0, items, 0, this.Count);
-            this.Capacity = this.Count;
+            if (this.Count != this.Capacity)
+            {
+                Array.Resize(ref this.items, this.Count);
+            }
         }
 
         public void Add(T obj)
@@ -115,7 +120,7 @@ namespace Academits.Barsukov
 
         public void Insert(int index, T obj)
         {
-            if (index < 0 || index >= this.Count)
+            if (index < 0 || index > this.Count)
             {
                 throw new IndexOutOfRangeException("индекс вышел за пределы списка");
             }
@@ -125,7 +130,10 @@ namespace Academits.Barsukov
                 IncreaseCapacity();
             }
 
-            Array.Copy(items, index, items, index + 1, this.Count - index);
+            if (index < this.Count)
+            {
+                Array.Copy(items, index, items, index + 1, this.Count - index);
+            }
             items[index] = obj;
             ++length;
         }
@@ -137,14 +145,8 @@ namespace Academits.Barsukov
                 throw new IndexOutOfRangeException("индекс вышел за пределы списка");
             }
 
-            if (this.Count + 1 >= this.Capacity)
-            {
-                IncreaseCapacity();
-            }
-
             Array.Copy(items, index + 1, items, index, this.Count - index - 1);
             --length;
-            Array.Clear(items, length, items.Length - length);
         }
 
         public bool Remove(T value)
@@ -195,14 +197,14 @@ namespace Academits.Barsukov
 
         public bool Contains(T value)
         {
-            for (int index = 0; index < this.Count; index++)
+            if (IndexOf(value) == -1)
             {
-                if (items[index].Equals(value))
-                {
-                    return true;
-                }
+                return false;
             }
-            return false;
+            else
+            {
+                return true;
+            }
         }
 
         public int IndexOf(T value)
@@ -229,7 +231,12 @@ namespace Academits.Barsukov
                 throw new IndexOutOfRangeException("индекс вышел за пределы списка");
             }
 
-            Array.Copy(items, index, array, 0, this.Count - index);
+            if (array.Length < this.Count + index + 1)
+            {
+                throw new ArgumentException("длина результирующего массива недостаточна");
+            }
+
+            Array.Copy(items, 0, array, index, this.Count);
         }
 
         public override string ToString()
@@ -252,8 +259,15 @@ namespace Academits.Barsukov
 
         public IEnumerator<T> GetEnumerator()
         {
-            foreach (var el in items)
-                yield return el;
+            for (int i = 0; i < this.Count; i++)
+            {
+                if (this.items[i] == null || i >= this.Count)
+                {
+                    throw new Exception("итератор вышел за пределы списка!");
+                }
+
+                yield return this.items[i];
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -261,7 +275,7 @@ namespace Academits.Barsukov
             return items.GetEnumerator();
         }
 
-        public override bool Equals(Object o)
+        public override bool Equals(object o)
         {
             if (ReferenceEquals(o, this))
             {
@@ -272,8 +286,8 @@ namespace Academits.Barsukov
                 return false;
             }
 
-            ArrayList<T> p = (ArrayList<T>) o;
-            if (this.Capacity != p.Capacity || this.Count!=p.Count)
+            ArrayList<T> p = (ArrayList<T>)o;
+            if (this.Capacity != p.Capacity || this.Count != p.Count)
             {
                 return false;
             }

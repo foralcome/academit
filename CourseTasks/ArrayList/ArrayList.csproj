@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="ArrayLisMain.cs" />
     <Compile Include="ArrayList.cs" />
-    <Compile Include="ArrayListElem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

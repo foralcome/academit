@@ -53,7 +53,14 @@ namespace Academits.Barsukov
             Console.WriteLine();
 
             Console.WriteLine("5) Добавление нового элемента 22 по индексу 2");
-            parts.Insert(2,22);
+            parts.Insert(2, 22);
+            Console.WriteLine("Список: {0}", parts.ToString());
+            Console.WriteLine("Элементов: {0}", parts.Count);
+            Console.WriteLine("Вместимость: {0}", parts.Capacity);
+            Console.WriteLine();
+
+            Console.WriteLine("4) Добавление нового элемента 55 в конец списка");
+            parts.Insert(parts.Count, 55);
             Console.WriteLine("Список: {0}", parts.ToString());
             Console.WriteLine("Элементов: {0}", parts.Count);
             Console.WriteLine("Вместимость: {0}", parts.Capacity);
@@ -92,8 +99,13 @@ namespace Academits.Barsukov
 
             Console.WriteLine("11) Копирование списка в массив");
             Console.WriteLine("Исходный список: {0}", parts.ToString());
-            int[] arrayParts = new int[parts.Count];
-            parts.CopyTo(arrayParts, 1);
+            int[] arrayParts = new int[20];
+            arrayParts[0] = 111;
+            arrayParts[1] = 112;
+            arrayParts[2] = 113;
+            arrayParts[3] = 114;
+            arrayParts[4] = 115;
+            parts.CopyTo(arrayParts, 2);
             Console.WriteLine("Скопированный массив: ");
             bool isFirst = true;
             Console.Write("{");
