@@ -80,8 +80,7 @@ namespace Academits.Barsukov
 
             this.CountRecords = 0;
             bool isQuote = false;
-            bool isBlockEnd = true;
-            bool isRowEnd = true;
+            int countChars = 0;
 
             try
             {
@@ -101,48 +100,49 @@ namespace Academits.Barsukov
                         string csvData = sr.ReadToEnd();
 
                         StringBuilder resultData = new StringBuilder();
+                        resultData.Append("<tr>");
+
                         int countQuote = 0;
 
                         for (int i = 0; i < csvData.Length; i++)
                         {
+                            if (countChars == 0)
+                            {
+                                resultData.Append("<td>");
+                            }
                             //пока не встретили кавычку "
                             if (!isQuote)
                             {
                                 //найден разделитель
                                 if (csvData[i] == this.Separator)
                                 {
-                                    isBlockEnd = true;
+                                    resultData.Append("</td>");
+                                    countChars = 0;
                                 }
                                 //найдена кавычка
                                 else if (csvData[i] == '\"')
                                 {
                                     isQuote = true;
                                     countQuote = 1;
-                                    isBlockEnd = false;
-                                    resultData.Append("<td>");
+                                    countChars++;
                                     continue;
                                 }
                                 //обнаружен перенос строки
                                 else if (csvData[i] == '\r' || csvData[i] == '\n')
                                 {
-                                    isBlockEnd = true;
-                                    isRowEnd = true;
-
+                                    resultData.Append("</td></tr>");
                                     i += Environment.NewLine.Length - 1;
+                                    countChars = 0;
+
+                                    if (i + Environment.NewLine.Length < csvData.Length)
+                                    {
+                                        resultData.Append("<tr>");
+                                    }
                                 }
                                 else
                                 {
-                                    if (isRowEnd == true)
-                                    {
-                                        resultData.Append("<tr>");
-                                        isRowEnd = false;
-                                    }
-                                    if (isBlockEnd == true)
-                                    {
-                                        resultData.Append("<td>");
-                                        isBlockEnd = false;
-                                    }
                                     resultData.Append(GetHTMLCodeByChar(csvData[i]));
+                                    countChars++;
                                     continue;
                                 }
                             }
@@ -152,9 +152,10 @@ namespace Academits.Barsukov
                                 //найден разделитель
                                 if (csvData[i] == this.Separator && countQuote % 2 == 0)
                                 {
+                                    countChars = 0;
                                     countQuote = 0;
                                     isQuote = false;
-                                    isBlockEnd = true;
+                                    resultData.Append("</td>");
                                 }
                                 //обнаружен перенос строки
                                 else if (csvData[i] == '\r' || csvData[i] == '\n')
@@ -162,12 +163,17 @@ namespace Academits.Barsukov
                                     if (countQuote % 2 == 0)
                                     {
                                         isQuote = false;
-                                        isBlockEnd = true;
-                                        isRowEnd = true;
+                                        countChars = 0;
+                                        resultData.Append("</td></tr>");
+                                        if (i + Environment.NewLine.Length < csvData.Length)
+                                        {
+                                            resultData.Append("<tr>");
+                                        }
                                     }
                                     else
                                     {
                                         resultData.Append("<br>");
+                                        countChars++;
                                     }
 
                                     i += Environment.NewLine.Length - 1;
@@ -184,33 +190,19 @@ namespace Academits.Barsukov
                                     {
                                         countQuote++;
                                     }
+                                    countChars++;
                                 }
                                 else
                                 {
-                                    if (isRowEnd == true)
-                                    {
-                                        resultData.Append("<tr>");
-                                        isRowEnd = false;
-                                    }
-                                    if (isBlockEnd == true)
-                                    {
-                                        resultData.Append("<td>");
-                                        isBlockEnd = false;
-                                    }
-
                                     resultData.Append(GetHTMLCodeByChar(csvData[i]));
+                                    countChars++;
                                     continue;
                                 }
                             }
-
-                            if (isBlockEnd == true)
-                            {
-                                resultData.Append("</td>");
-                            }
-                            if (isRowEnd == true)
-                            {
-                                resultData.Append("</tr>");
-                            }
+                        }
+                        if (countChars != 0)
+                        {
+                            resultData.Append("</td></tr>");
                         }
                         sw.WriteLine(resultData);
 
