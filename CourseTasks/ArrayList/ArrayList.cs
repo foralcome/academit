@@ -197,14 +197,7 @@ namespace Academits.Barsukov
 
         public bool Contains(T value)
         {
-            if (IndexOf(value) == -1)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return (IndexOf(value) == -1) ? false : true;
         }
 
         public int IndexOf(T value)
@@ -231,7 +224,7 @@ namespace Academits.Barsukov
                 throw new IndexOutOfRangeException("индекс вышел за пределы списка");
             }
 
-            if (array.Length < this.Count + index + 1)
+            if (array.Length - index < this.Count)
             {
                 throw new ArgumentException("длина результирующего массива недостаточна");
             }
@@ -261,11 +254,6 @@ namespace Academits.Barsukov
         {
             for (int i = 0; i < this.Count; i++)
             {
-                if (this.items[i] == null || i >= this.Count)
-                {
-                    throw new Exception("итератор вышел за пределы списка!");
-                }
-
                 yield return this.items[i];
             }
         }

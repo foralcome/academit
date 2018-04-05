@@ -27,6 +27,11 @@ namespace Academits.Barsukov
             Console.WriteLine("Вместимость: {0}", parts.Capacity);
             Console.WriteLine();
 
+            foreach (int a in parts)
+            {
+                Console.WriteLine(a);
+            }
+
             Console.WriteLine("1) Изменение Capacity на 20 ");
             parts.Capacity = 20;
             Console.WriteLine("Список: {0}", parts.ToString());
