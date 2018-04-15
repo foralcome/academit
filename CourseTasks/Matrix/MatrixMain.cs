@@ -85,19 +85,24 @@ namespace Academits.Barsukov
 
                 Console.WriteLine("Вычисление определителя матрицы");
                 double[,] a5 = {
-                    { 1, -2, 3 },
-                    { 0, 7, 4 },
-                    { 5, 3, -3 } };
+                    { 2, 4, 0 },
+                    { -2, 1, 3 },
+                    { -1, 0, 1 } };
                 Matrix m5 = new Matrix(a5);
                 Console.WriteLine("Матрица: {0}", m5.ToString());
                 Console.WriteLine("Определитель: {0}", m5.GetDeterminant());
                 Console.WriteLine();
 
                 Console.WriteLine("Умножение матрицы на вектор");
-                Console.WriteLine("Матрица: {0}", m5.ToString());
-                Vector v6 = new Vector(new double[] { -1, 2, 0 });
+                double[,] a6 = {
+                    { 2, 4, 0, 2 },
+                    { -2, 1, 3,0 },
+                    { -1, 0, 1, 1 } };
+                Matrix m6 = new Matrix(a6);
+                Console.WriteLine("Матрица: {0}", m6.ToString());
+                Vector v6 = new Vector(new double[] { 1, 2, -1, 0 });
                 Console.WriteLine("Вектор: {0}", v6.ToString());
-                Vector  r6 = m5.MultiplicationVector(v6);
+                Vector  r6 = m6.MultiplicationVector(v6);
                 Console.WriteLine("Рузультат: {0}", r6.ToString());
                 Console.WriteLine();
 
@@ -135,16 +140,16 @@ namespace Academits.Barsukov
                 Console.WriteLine();
 
                 Console.WriteLine("Произведение двух матриц с возвратом результата");
+                double[,] a10 = {
+                    { 5, -1, 6 },
+                    { -3, 0, 7 } };
+                Matrix m10 = new Matrix(a10);
                 double[,] a9 = {
-                    { 1, 2, 3 },
-                    { 0, -1, 4 } };
+                    { 2, 1 },
+                    { -3, 0 },
+                    { 4, -1 } };
                 Matrix m9 = new Matrix(a9);
                 Console.WriteLine("Матрица 1: {0}", m9.ToString());
-                double[,] a10 = {
-                    { 3, 0 },
-                    { 2, -4 },
-                    { -1, -3 } };
-                Matrix m10 = new Matrix(a10);
                 Console.WriteLine("Матрица 2: {0}", m10.ToString());
                 Matrix r10 = Matrix.GetMultiplication(m9, m10);
                 Console.WriteLine("Рузультат: {0}", r10.ToString());

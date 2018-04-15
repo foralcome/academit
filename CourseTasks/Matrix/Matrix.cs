@@ -262,11 +262,11 @@ namespace Academits.Barsukov
         {
             if (v.Size != this.ColsCount)
             {
-                throw new ArgumentException("не верный размер вектора!");
+                throw new ArgumentException("число столбцов в матрице должно совпадать с числом строк в векторе-столбце!");
             }
 
-            Vector result = new Vector(v.Size);
-            for (int i = 0; i < this.ColsCount; i++)
+            Vector result = new Vector(this.RowsCount);
+            for (int i = 0; i < this.RowsCount; i++)
             {
                 result.SetValueByIndex(i, Vector.GetMultiplication(this.vectors[i], v));
             }
