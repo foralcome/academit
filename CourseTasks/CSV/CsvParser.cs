@@ -25,7 +25,6 @@ namespace Academits.Barsukov
             this.fileName = Path.GetFileName(filePath);
             this.FileEncoding = encoding;
             this.Separator = separator;
-
             this.isFileOpen = true;
         }
 
@@ -34,20 +33,9 @@ namespace Academits.Barsukov
             get;
         }
 
-        private int CountRecords
-        {
-            get;
-            set;
-        }
-
         private Encoding FileEncoding
         {
             get;
-        }
-
-        public int GetCountRecords()
-        {
-            return this.CountRecords;
         }
 
         private string GetHTMLCodeByChar(char c)
@@ -78,7 +66,6 @@ namespace Academits.Barsukov
                 throw new FileNotFoundException("файл не найден!!");
             }
 
-            this.CountRecords = 0;
             bool isQuote = false;
             int countChars = 0;
 
