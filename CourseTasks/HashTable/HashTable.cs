@@ -31,7 +31,10 @@ namespace Academits.Barsukov
 
         public int Count
         {
-            get;
+            get
+            {
+                return count;
+            }
         }
 
         public int GetHashCode(T item)
@@ -79,7 +82,7 @@ namespace Academits.Barsukov
         {
             throw new NotImplementedException();
         }
-        
+
         public bool IsReadOnly
         {
             get { return false; }
@@ -92,9 +95,15 @@ namespace Academits.Barsukov
             {
                 return false;
             }
-            return this.table[hashCodeItem].Remove(item);
+            if (this.table[hashCodeItem].Remove(item))
+            {
+                this.count--;
+                return true;
+            }
+
+            return false;
         }
-        
+
         public IEnumerator<T> GetEnumerator()
         {
             foreach (ArrayList<T> l in table)
