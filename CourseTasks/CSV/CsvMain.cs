@@ -20,14 +20,9 @@ namespace Academits.Barsukov
             }
             else
             {
-                CsvParser p = new CsvParser(args[0], ',', Encoding.UTF8);
-                if (!File.Exists(args[1]))
+                try
                 {
-                    Console.WriteLine("Файл не найден! Путь {0}", args[1]);
-                    Console.WriteLine("Выполнение программы было прервано!");
-                }
-                else
-                {
+                    CsvParser p = new CsvParser(args[0], ',', Encoding.UTF8);
                     if (p.ParseInHtmlFile(args[1]))
                     {
                         Console.WriteLine("Операция чтения файла CSV выполнена успешно!");
@@ -37,6 +32,10 @@ namespace Academits.Barsukov
                     {
                         Console.WriteLine("Во время выполнения разбора файла произошла ошибка!");
                     }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
