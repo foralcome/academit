@@ -50,25 +50,9 @@ namespace Academits.Barsukov
                 Console.WriteLine(">> Item 13 is't exists in the hashtable");
             }
 
-            Console.WriteLine("4) Get HashCode item 13");
-            Console.WriteLine(">> Item 13 have hashcode {0}", hashTable.GetHashCode(13));
-
-            Console.WriteLine("5) Get index item 13 in the list");
-            int indexItem = hashTable.IndexOf(13);
-            if (indexItem != -1)
-            {
-                Console.WriteLine(">> Item 13 have index {0} in the list", indexItem);
-            }
-            else
-            {
-                Console.WriteLine(">> Item 13 is't exists in the hashtable");
-            }
-
-            Console.WriteLine("6) Remove item 13");
+            Console.WriteLine("4) Remove item 13");
             if (hashTable.Remove(13))
             {
-                Console.WriteLine(">> Item 13 have index {0} in the list", indexItem);
-
                 foreach (int v in hashTable)
                 {
                     Console.WriteLine(v);
@@ -79,6 +63,14 @@ namespace Academits.Barsukov
             else
             {
                 Console.WriteLine(">> Item 13 is't exists in the hashtable");
+            }
+
+            Console.WriteLine("5) CopyTo Array");
+            int[] array = new int[5];
+            hashTable.CopyTo(array, 1);
+            foreach (int item in array)
+            {
+                Console.Write(item + " ");
             }
         }
     }

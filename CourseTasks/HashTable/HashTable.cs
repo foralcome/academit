@@ -9,8 +9,8 @@ namespace Academits.Barsukov
 {
     class HashTable<T> : ICollection<T>
     {
-        private ArrayList<T>[] table;
-        private int count;
+        private List<T>[] table;
+        private int modCount = 0;
 
         public HashTable(int size)
         {
@@ -18,7 +18,7 @@ namespace Academits.Barsukov
             {
                 throw new ArgumentException("Передан неверный размер Hash-таблицы");
             }
-            this.table = new ArrayList<T>[size];
+            this.table = new List<T>[size];
         }
 
         public int Size
@@ -31,17 +31,14 @@ namespace Academits.Barsukov
 
         public int Count
         {
-            get
-            {
-                return count;
-            }
+            get;
         }
 
-        public int GetHashCode(T item)
+        private int GetHashCode(T item)
         {
             if (ReferenceEquals(item, null))
             {
-                throw new ArgumentNullException("переданное значение не должно быть null!");
+                return 0;
             }
 
             return Math.Abs(item.GetHashCode() % this.Size);
@@ -52,10 +49,11 @@ namespace Academits.Barsukov
             int hashCodeItem = this.GetHashCode(item);
             if (this.table[hashCodeItem] == null)
             {
-                this.table[hashCodeItem] = new ArrayList<T>(10);
+                this.table[hashCodeItem] = new List<T>(10);
             }
             this.table[hashCodeItem].Add(item);
-            this.count++;
+            //this.Count++;
+            this.modCount++;
         }
 
         public bool Contains(T item)
@@ -68,19 +66,35 @@ namespace Academits.Barsukov
             return this.table[hashCodeItem].Contains(item);
         }
 
-        public int IndexOf(T item)
-        {
-            int hashCodeItem = this.GetHashCode(item);
-            if (ReferenceEquals(this.table[hashCodeItem], null))
-            {
-                return -1;
-            }
-            return this.table[hashCodeItem].IndexOf(item);
-        }
-
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            bool isFull = false;
+            int insertIndex = arrayIndex;
+            foreach (List<T> list in this.table)
+            {
+                if (ReferenceEquals(list, null))
+                {
+                    continue;
+                }
+
+                foreach (T item in list)
+                {
+                    if (insertIndex < array.Length)
+                    {
+                        array[insertIndex] = item;
+                        insertIndex++;
+                    }
+                    else
+                    {
+                        isFull = true;
+                    }
+                }
+
+                if (isFull == true)
+                {
+                    break;
+                }
+            }
         }
 
         public bool IsReadOnly
@@ -97,7 +111,8 @@ namespace Academits.Barsukov
             }
             if (this.table[hashCodeItem].Remove(item))
             {
-                this.count--;
+                //this.count--;
+                this.modCount++;
                 return true;
             }
 
@@ -106,8 +121,15 @@ namespace Academits.Barsukov
 
         public IEnumerator<T> GetEnumerator()
         {
-            foreach (ArrayList<T> l in table)
+            int lastModCount = this.modCount;
+
+            foreach (List<T> l in table)
             {
+                if (this.modCount != lastModCount)
+                {
+                    throw (new InvalidOperationException("При обходе итератора обнаружжено изменение коллекции!"));
+                }
+
                 if (l == null)
                 {
                     continue;
@@ -125,7 +147,10 @@ namespace Academits.Barsukov
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            foreach (List<T> list in this.table)
+            {
+                list.Clear();
+            }
         }
     }
 }
